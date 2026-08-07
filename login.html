@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Login — Financial Identity AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'%3E%3Cpath d='M12 2L4 7l8 5 8-5-8-5z'/%3E%3Cpath d='M4 17l8 5 8-5M4 12l8 5 8-5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E" />
+<style>
+  /* Auth illustration */
+  .auth-ill {
+    position: relative; width: 100%; max-width: 420px;
+    margin: 0 auto;
+    aspect-ratio: 1 / 1;
+  }
+  .auth-ill .orbit {
+    position: absolute; border: 1px dashed rgba(255,255,255,.18);
+    border-radius: 50%;
+    animation: rotate 28s linear infinite;
+  }
+  .auth-ill .orbit.o1 { inset: 0; }
+  .auth-ill .orbit.o2 { inset: 14%; }
+  .auth-ill .orbit.o3 { inset: 28%; border-style: solid; border-color: rgba(255,255,255,.08); }
+  .auth-ill .core {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 120px; height: 120px; border-radius: 50%;
+    background: linear-gradient(135deg,#3B82F6,#8B5CF6);
+    display: grid; place-items: center;
+    box-shadow: 0 0 80px rgba(59,130,246,.6);
+  }
+  .auth-ill .node {
+    position: absolute; width: 44px; height: 44px;
+    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+    border-radius: 12px; backdrop-filter: blur(12px);
+    display: grid; place-items: center; color: white;
+    animation: float 5s ease-in-out infinite;
+  }
+  .auth-ill .node:nth-child(5) { top: 6%; left: 50%; }
+  .auth-ill .node:nth-child(6) { top: 50%; right: 0%; animation-delay: 1s; }
+  .auth-ill .node:nth-child(7) { bottom: 6%; left: 50%; animation-delay: 2s; }
+  .auth-ill .node:nth-child(8) { top: 50%; left: 0%; animation-delay: 1.5s; }
+  @keyframes rotate { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+
+  /* strength meter */
+  .strength {
+    display: flex; gap: 4px; margin-top: 8px;
+  }
+  .strength span {
+    flex: 1; height: 4px; border-radius: 2px;
+    background: var(--surface-3);
+    transition: background 0.3s;
+  }
+  .strength.s1 span:nth-child(-n+1) { background: var(--danger); }
+  .strength.s2 span:nth-child(-n+2) { background: var(--warning); }
+  .strength.s3 span:nth-child(-n+3) { background: var(--accent); }
+  .strength.s4 span { background: var(--success); }
+
+  /* Floating highlights */
+  .auth-fl {
+    position: absolute;
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: white;
+    animation: float 6s ease-in-out infinite;
+  }
+  .auth-fl.f1 { top: 14%; left: 8%; width: 200px; animation-delay: 0s; }
+  .auth-fl.f2 { bottom: 14%; left: 12%; width: 220px; animation-delay: 1.5s; }
+  .auth-fl.f3 { top: 22%; right: 6%; width: 180px; animation-delay: 1s; }
+</style>
+</head>
+<body class="no-chrome">
+
+<div class="auth">
+  <!-- Artistic side -->
+  <div class="auth-art" style="position:relative">
+    <div class="blob" style="top:-100px;left:-100px;width:400px;height:400px;background:rgba(59,130,246,0.4)"></div>
+    <div class="blob" style="bottom:-100px;right:-100px;width:380px;height:380px;background:rgba(139,92,246,0.35)"></div>
+
+    <a href="landing.html" class="brand" style="color:white;position:absolute;top:32px;left:40px">
+      <span class="brand-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 7l8 5 8-5-8-5z"/><path d="M4 17l8 5 8-5M4 12l8 5 8-5"/></svg></span>
+      <span class="brand-name">Financial Identity AI</span>
+    </a>
+
+    <div style="position:absolute;top:90px;left:40px;right:40px">
+      <span class="badge" style="background:rgba(255,255,255,.1);color:white;border:1px solid rgba(255,255,255,.18);padding:6px 12px">
+        <span class="dot pulse-soft" style="background:#22C55E"></span>
+        Live · Secure
+      </span>
+      <h1 style="font-size:clamp(2rem,3.5vw,2.8rem);letter-spacing:-0.03em;line-height:1.05;margin:24px 0 16px">
+        Your money.<br/>Your identity.<br/><span style="background:linear-gradient(135deg,#22D3EE,#A78BFA);-webkit-background-clip:text;background-clip:text;color:transparent">Verified by AI.</span>
+      </h1>
+      <p style="color:rgba(255,255,255,.7);font-size:1rem;max-width:420px;line-height:1.65">
+        Join 12,000+ freelancers, gig workers and self-employed professionals who've unlocked smarter loans, better rates and a true Financial Identity.
+      </p>
+
+      <!-- Floating highlight cards -->
+      <div class="auth-fl f1">
+        <div class="row" style="gap:8px;font-size:0.78rem;opacity:0.7">
+          <span class="badge success" style="padding:2px 8px"><span class="dot"></span> LIVE</span>
+          <span>Loan Offers</span>
+        </div>
+        <div style="font-size:1.4rem;font-weight:700;margin-top:6px;letter-spacing:-0.02em">₹6.2L <span style="font-size:.7em;opacity:.7;font-weight:500">approved</span></div>
+      </div>
+      <div class="auth-fl f2">
+        <div class="row" style="gap:8px;font-size:0.78rem;opacity:0.7">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 7l8 5 8-5-8-5z"/><path d="M4 17l8 5 8-5M4 12l8 5 8-5"/></svg>
+          AI Activity
+        </div>
+        <div style="font-size:0.95rem;margin-top:6px">DNA score lifted to <b style="font-size:1.1rem">847</b></div>
+      </div>
+      <div class="auth-fl f3">
+        <div class="row" style="gap:8px;font-size:0.78rem;opacity:0.7">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Verified
+        </div>
+        <div style="font-size:0.92rem;margin-top:6px">AES-256 · RBI Compliant</div>
+      </div>
+    </div>
+
+    <!-- Trusted by -->
+    <div style="position:absolute;bottom:32px;left:40px">
+      <p style="color:rgba(255,255,255,.5);font-size:0.78rem;text-transform:uppercase;letter-spacing:0.14em;margin:0 0 12px">Trusted by 30+ lenders</p>
+      <div class="row" style="gap:20px;opacity:0.8;font-weight:700;font-size:1.1rem">
+        <span>Razorpay</span>
+        <span>Lendingkart</span>
+        <span>Indifi</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form side -->
+  <div class="auth-form">
+    <div style="max-width:420px;width:100%;margin:0 auto">
+      <div class="row" style="justify-content:space-between;margin-bottom:32px">
+        <h2 style="margin:0;font-size:1.5rem;letter-spacing:-0.025em;font-weight:700">Welcome back</h2>
+        <button class="btn icon ghost" data-theme-toggle>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41"/></svg>
+        </button>
+      </div>
+
+      <!-- Toggle -->
+      <div class="tabs" style="margin-bottom:24px;width:100%">
+        <button class="on" data-tab="login" style="flex:1">Login</button>
+        <button data-tab="register" style="flex:1">Create Account</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <form data-form="login" style="display:flex;flex-direction:column;gap:14px" onsubmit="Auth.login(this);return false">
+        <div class="field">
+          <label>Email</label>
+          <div class="input-group">
+            <div class="lead">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <input class="input" type="email" placeholder="arjun@joshi.studio" value="arjun@joshi.studio" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <label style="margin:0">Password</label>
+            <a href="#" style="font-size:0.8rem">Forgot?</a>
+          </div>
+          <div class="input-group">
+            <div class="lead">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <input class="input" type="password" id="loginPass" placeholder="••••••••" value="Arjun@2026" required />
+            <button type="button" class="lead pw-toggle" data-toggle="loginPass" style="left:auto;right:0;width:40px;cursor:pointer;background:transparent;border:0" aria-label="Toggle password visibility">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <div class="strength s4">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <span class="hint" style="color:var(--success)">Strong password</span>
+        </div>
+
+        <div class="row" style="justify-content:space-between;font-size:0.85rem">
+          <label class="row" style="gap:8px;cursor:pointer">
+            <input type="checkbox" checked style="accent-color:var(--accent)" />
+            Keep me signed in
+          </label>
+        </div>
+
+        <button class="btn primary lg" type="submit" style="margin-top:6px">
+          Continue to Dashboard
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+
+        <div class="row" style="gap:10px">
+          <hr style="flex:1;background:var(--border);border:0;height:1px;margin:0"/>
+          <span style="color:var(--muted);font-size:0.78rem">OR</span>
+          <hr style="flex:1;background:var(--border);border:0;height:1px;margin:0"/>
+        </div>
+
+        <button type="button" class="btn secondary" onclick="location.href='onboarding.html'">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A10.99 10.99 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.84 14.1A6.96 6.96 0 0 1 5.49 12c0-.73.13-1.43.35-2.1V7.07H2.18A11 11 0 0 0 1 12c0 1.78.43 3.47 1.18 4.97l3.66-2.87z"/><path fill="#EA4335" d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.79 14.97 1 12 1A10.99 10.99 0 0 0 2.18 7.07l3.66 2.83C6.71 6.31 9.14 4.75 12 4.75z"/></svg>
+          Continue with Google
+        </button>
+
+        <button type="button" class="btn secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16.365 1.43c0 1.14-.45 2.27-1.18 3.13-.74.85-1.94 1.5-2.95 1.42-.12-1.13.45-2.31 1.18-3.13.74-.85 2.04-1.5 2.95-1.42zm3.85 17.36c-.66 1.53-1.04 2.21-1.94 3.56-1.25 1.88-3.01 4.22-5.2 4.24-1.95.03-2.45-1.27-5.1-1.25-2.65.03-3.2 1.28-5.15 1.25-2.19-.02-3.87-2.13-5.12-4-3.36-5.03-3.71-10.94-1.64-14.08 1.47-2.23 3.79-3.54 5.97-3.54 2.21 0 3.6 1.21 5.42 1.21 1.76 0 2.83-1.21 5.4-1.21 1.93 0 3.98 1.05 5.43 2.87-4.77 2.62-3.99 9.45.85 10.95z"/></svg>
+          Continue with Apple
+        </button>
+
+        <p style="text-align:center;color:var(--muted);font-size:0.82rem;margin:8px 0 0">
+          By continuing you agree to our
+          <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
+        </p>
+      </form>
+
+      <!-- REGISTER FORM (hidden by default) -->
+      <form data-form="register" style="display:none;flex-direction:column;gap:14px" onsubmit="Auth.register(this);return false">
+        <div class="field">
+          <label>Full Name</label>
+          <input class="input" type="text" placeholder="Arjun Joshi" required />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input class="input" type="email" placeholder="you@email.com" required />
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input class="input" type="password" id="regPass" placeholder="Min 8 characters" oninput="updateStrength(this.value)" required />
+          <div class="strength" id="strengthBar">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <span class="hint" id="strengthHint">Use 8+ chars with letters, numbers &amp; symbols</span>
+        </div>
+        <button class="btn primary lg" type="submit">
+          Create Account
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+        <button type="button" class="btn secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A10.99 10.99 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.84 14.1A6.96 6.96 0 0 1 5.49 12c0-.73.13-1.43.35-2.1V7.07H2.18A11 11 0 0 0 1 12c0 1.78.43 3.47 1.18 4.97l3.66-2.87z"/><path fill="#EA4335" d="M12 4.75c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.79 14.97 1 12 1A10.99 10.99 0 0 0 2.18 7.07l3.66 2.83C6.71 6.31 9.14 4.75 12 4.75z"/></svg>
+          Sign up with Google
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="assets/api.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  /* Tab toggle */
+  document.querySelectorAll('[data-tab]').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('[data-tab]').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      const tab = b.dataset.tab;
+      document.querySelectorAll('[data-form]').forEach(f => f.style.display = 'none');
+      document.querySelector(`[data-form="${tab}"]`).style.display = 'flex';
+    });
+  });
+
+  /* Password visibility toggle (eye icon) */
+  const EYE_OPEN = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const EYE_OFF = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+  document.querySelectorAll('.pw-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = document.getElementById(btn.dataset.toggle);
+      if (!input) return;
+      const showing = input.type === 'password';
+      input.type = showing ? 'text' : 'password';
+      btn.innerHTML = showing ? EYE_OFF : EYE_OPEN;
+    });
+  });
+
+  /* Strength meter */
+  function updateStrength(v) {
+    const bar = document.getElementById('strengthBar');
+    const hint = document.getElementById('strengthHint');
+    let s = 0;
+    if (v.length >= 8) s++;
+    if (/[A-Z]/.test(v) && /[a-z]/.test(v)) s++;
+    if (/[0-9]/.test(v)) s++;
+    if (/[^A-Za-z0-9]/.test(v)) s++;
+    bar.className = 'strength' + (s >= 1 ? ' s' + s : '');
+    const labels = ['Too weak', 'Weak', 'Fair', 'Good', 'Strong'];
+    hint.textContent = labels[s];
+    hint.style.color = ['var(--danger)','var(--danger)','var(--warning)','var(--accent)','var(--success)'][s];
+  }
+</script>
+</body>
+</html>

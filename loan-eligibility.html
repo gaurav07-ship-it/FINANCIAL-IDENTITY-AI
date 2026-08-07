@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Loan Eligibility — Financial Identity AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'%3E%3Cpath d='M12 2L4 7l8 5 8-5-8-5z'/%3E%3Cpath d='M4 17l8 5 8-5M4 12l8 5 8-5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E" />
+</head>
+<body>
+
+<div id="shell"></div>
+<script>window.FIA_PAGE = { title: 'Loan Eligibility', crumbs: 'Insights / Loans', sub: 'AI-curated offers across 30+ lenders.' };</script>
+<script src="assets/api.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/chrome.js"></script>
+
+<div>
+  <!-- Probability hero -->
+  <div class="card elev mb-3" style="background:linear-gradient(135deg, var(--accent) 0%, var(--violet) 100%);color:white;border:none;padding:32px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-50px;right:-50px;width:300px;height:300px;background:rgba(255,255,255,0.1);border-radius:50%;filter:blur(40px)"></div>
+    <div class="grid" style="grid-template-columns:auto 1fr auto;gap:32px;align-items:center;position:relative">
+      <div style="position:relative;width:160px;height:160px">
+        <svg viewBox="0 0 36 36" style="transform:rotate(-90deg);width:100%;height:100%">
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="3" />
+          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#22C55E" stroke-width="3" stroke-dasharray="92 100" stroke-linecap="round" />
+        </svg>
+        <div style="position:absolute;inset:0;display:grid;place-items:center;text-align:center">
+          <div>
+            <div style="font-size:2.6rem;font-weight:700;letter-spacing:-0.03em;line-height:1">92%</div>
+            <div style="opacity:0.85;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.14em">Approval</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <span class="badge" style="background:rgba(255,255,255,.18);color:white;border:1px solid rgba(255,255,255,.25);padding:6px 12px">
+          <span class="dot pulse-soft" style="background:#86EFAC"></span>
+          Match found
+        </span>
+        <h1 style="margin:14px 0 6px;font-size:1.8rem;letter-spacing:-0.025em">You're eligible for ₹6,20,000</h1>
+        <p style="opacity:0.9;margin:0;max-width:540px">Based on your Financial Identity, 8 partner lenders are willing to offer pre-approved personal loans starting at 10.5% p.a.</p>
+      </div>
+      <div class="col" style="gap:10px;text-align:right">
+        <button class="btn" style="background:white;color:var(--accent)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          Share Passport
+        </button>
+        <span class="muted" style="opacity:0.7;font-size:0.82rem">No impact on credit score</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Calculator -->
+  <div class="grid mb-3" style="grid-template-columns: 1.4fr 1fr;gap:18px">
+    <div class="card elev">
+      <div class="card-h">
+        <div>
+          <h3 class="card-title">Loan Calculator</h3>
+          <p class="card-sub">Find your perfect EMI</p>
+        </div>
+      </div>
+
+      <div class="col" style="gap:18px">
+        <div>
+          <div class="row between" style="margin-bottom:10px">
+            <span style="font-weight:600">Loan Amount</span>
+            <span style="font-weight:700;font-size:1.15rem">₹6,20,000</span>
+          </div>
+          <input type="range" min="50000" max="2000000" value="620000" step="10000" style="width:100%;accent-color:var(--accent)" />
+          <div class="row between" style="font-size:0.78rem;color:var(--muted);margin-top:6px"><span>₹50k</span><span>₹20L</span></div>
+        </div>
+
+        <div>
+          <div class="row between" style="margin-bottom:10px">
+            <span style="font-weight:600">Tenure</span>
+            <span style="font-weight:700;font-size:1.15rem">36 months</span>
+          </div>
+          <input type="range" min="6" max="84" value="36" step="6" style="width:100%;accent-color:var(--accent)" />
+          <div class="row between" style="font-size:0.78rem;color:var(--muted);margin-top:6px"><span>6 months</span><span>7 years</span></div>
+        </div>
+
+        <div>
+          <div class="row between" style="margin-bottom:10px">
+            <span style="font-weight:600">Interest Rate</span>
+            <span style="font-weight:700;font-size:1.15rem">10.5% p.a.</span>
+          </div>
+          <input type="range" min="9" max="24" value="10.5" step="0.1" style="width:100%;accent-color:var(--accent)" />
+          <div class="row between" style="font-size:0.78rem;color:var(--muted);margin-top:6px"><span>9%</span><span>24%</span></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="grid g-3" style="gap:14px">
+          <div class="card elev" style="padding:14px;background:var(--accent-soft);text-align:center">
+            <div style="font-size:0.78rem;color:var(--muted)">Monthly EMI</div>
+            <div style="font-size:1.65rem;font-weight:700;letter-spacing:-0.025em;margin-top:4px">₹20,318</div>
+          </div>
+          <div class="card elev" style="padding:14px;text-align:center">
+            <div style="font-size:0.78rem;color:var(--muted)">Total Interest</div>
+            <div style="font-size:1.65rem;font-weight:700;letter-spacing:-0.025em;margin-top:4px">₹1,11,448</div>
+          </div>
+          <div class="card elev" style="padding:14px;text-align:center">
+            <div style="font-size:0.78rem;color:var(--muted)">Total Payable</div>
+            <div style="font-size:1.65rem;font-weight:700;letter-spacing:-0.025em;margin-top:4px">₹7,31,448</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reasons -->
+    <div class="card elev">
+      <div class="card-h">
+        <div>
+          <h3 class="card-title">Why this offer?</h3>
+          <p class="card-sub">Explainable AI · Top reasons</p>
+        </div>
+      </div>
+      <div class="col" style="gap:14px" id="reasonsList"></div>
+    </div>
+  </div>
+
+  <!-- Lender offers table -->
+  <div class="card elev">
+    <div class="card-h">
+      <div>
+        <h3 class="card-title">Pre-approved offers</h3>
+        <p class="card-sub">8 lenders matched · Sortable by approval chance</p>
+      </div>
+      <div class="tabs">
+        <button class="on">All</button>
+        <button>Personal</button>
+        <button>Business</button>
+        <button>Asset-backed</button>
+      </div>
+    </div>
+    <table class="tbl">
+      <thead>
+        <tr><th>Lender</th><th>Amount</th><th>Tenure</th><th>Rate</th><th>Approval</th><th>Time</th><th></th></tr>
+      </thead>
+      <tbody id="lenderTbl"></tbody>
+    </table>
+  </div>
+
+  <!-- Improvement suggestions -->
+  <div class="grid g-3 mt-3">
+    <div class="card elev">
+      <div class="row" style="gap:14px;align-items:start">
+        <div style="width:42px;height:42px;border-radius:12px;background:rgba(34,197,94,0.12);color:var(--success);display:grid;place-items:center;flex-shrink:0">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        </div>
+        <div>
+          <h4 style="margin:0 0 4px;font-size:0.95rem">Pay down credit card by ₹40k</h4>
+          <p class="muted" style="margin:0;font-size:0.85rem">Lifts your eligibility by ₹1.2L and reduces rate by 0.5%.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card elev">
+      <div class="row" style="gap:14px;align-items:start">
+        <div style="width:42px;height:42px;border-radius:12px;background:rgba(245,158,11,0.12);color:var(--warning);display:grid;place-items:center;flex-shrink:0">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+        </div>
+        <div>
+          <h4 style="margin:0 0 4px;font-size:0.95rem">Diversify income sources</h4>
+          <p class="muted" style="margin:0;font-size:0.85rem">Adding 2 more regular clients could raise limit to ₹9.5L.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card elev">
+      <div class="row" style="gap:14px;align-items:start">
+        <div style="width:42px;height:42px;border-radius:12px;background:rgba(139,92,246,0.12);color:var(--violet);display:grid;place-items:center;flex-shrink:0">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div>
+          <h4 style="margin:0 0 4px;font-size:0.95rem">Build 6-month emergency fund</h4>
+          <p class="muted" style="margin:0;font-size:0.85rem">Currently 3.2 months. Reaching 6 unlocks premium lender offers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+  const REASONS = [
+    { p: 30, l: 'Consistent income history', d: '8+ months of regular inflows, ±7% variance.' },
+    { p: 22, l: 'Strong discipline score', d: 'Credit utilisation under 30%, no late payments.' },
+    { p: 18, l: 'High Financial DNA', d: 'Score 847 places you in Elite tier.' },
+    { p: 14, l: 'Stable banking patterns', d: 'No bounces, healthy savings balance.' },
+    { p: 10, l: 'Diversified income', d: 'Mix of client work, gig platforms and UPI.' },
+  ];
+  document.getElementById('reasonsList').innerHTML = REASONS.map(r => `
+    <div>
+      <div class="row between" style="margin-bottom:6px">
+        <span style="font-weight:500;font-size:0.92rem">${r.l}</span>
+        <span class="badge info">+${r.p} pts</span>
+      </div>
+      <div class="muted" style="font-size:0.82rem">${r.d}</div>
+      <div class="progress mt-1" style="height:4px"><div class="fill" style="width:${r.p * 3}%"></div></div>
+    </div>
+  `).join('');
+
+  const LENDERS = [
+    { l: 'Razorpay Capital', a: '₹6.2L', t: '36m', r: '10.5%', p: 92, d: '4h', logo: 'linear-gradient(135deg,#3395FF,#072654)' },
+    { l: 'Lendingkart', a: '₹5.8L', t: '36m', r: '11.2%', p: 89, d: '24h', logo: 'linear-gradient(135deg,#FF6B35,#F7931E)' },
+    { l: 'Indifi', a: '₹7.1L', t: '24m', r: '12.0%', p: 86, d: '48h', logo: 'linear-gradient(135deg,#0F766E,#0D9488)' },
+    { l: 'KredX', a: '₹5.5L', t: '48m', r: '11.8%', p: 84, d: '2d', logo: 'linear-gradient(135deg,#7C3AED,#A78BFA)' },
+    { l: 'Flexiloans', a: '₹4.9L', t: '36m', r: '12.5%', p: 81, d: '12h', logo: 'linear-gradient(135deg,#EF4444,#F87171)' },
+    { l: 'CreditMantri', a: '₹6.5L', t: '36m', r: '10.9%', p: 88, d: '6h', logo: 'linear-gradient(135deg,#1E40AF,#3B82F6)' },
+    { l: 'MoneyTap', a: '₹3.8L', t: '12m', r: '13.5%', p: 79, d: '8h', logo: 'linear-gradient(135deg,#0891B2,#06B6D4)' },
+    { l: 'PaySense', a: '₹5.0L', t: '24m', r: '12.2%', p: 82, d: '12h', logo: 'linear-gradient(135deg,#1F2937,#4B5563)' },
+  ];
+  document.getElementById('lenderTbl').innerHTML = LENDERS.map(L => `
+    <tr>
+      <td>
+        <div class="row" style="gap:10px">
+          <div style="width:32px;height:32px;border-radius:8px;background:${L.logo};display:grid;place-items:center;color:white;font-weight:700;font-size:0.7rem">${L.l[0]}</div>
+          <strong>${L.l}</strong>
+        </div>
+      </td>
+      <td><strong>${L.a}</strong></td>
+      <td>${L.t}</td>
+      <td>${L.r}</td>
+      <td>
+        <div class="row" style="gap:8px">
+          <div class="progress" style="width:60px;height:6px"><div class="fill" style="width:${L.p}%;background:${L.p > 85 ? 'var(--success)' : L.p > 75 ? 'var(--warning)' : 'var(--danger)'}"></div></div>
+          <span style="font-weight:600">${L.p}%</span>
+        </div>
+      </td>
+      <td><span class="badge neutral">${L.d}</span></td>
+      <td><button class="btn primary sm">Apply</button></td>
+    </tr>
+  `).join('');
+}, 0));
+</script>
+</body>
+</html>

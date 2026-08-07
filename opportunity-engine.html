@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Opportunity Engine — Financial Identity AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'%3E%3Cpath d='M12 2L4 7l8 5 8-5-8-5z'/%3E%3Cpath d='M4 17l8 5 8-5M4 12l8 5 8-5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E" />
+<style>
+  .opp-card {
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    transition: all 0.3s var(--ease);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .opp-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-xl); border-color: transparent; }
+  .opp-card .ribbon {
+    position: absolute; top: 14px; right: 14px;
+    padding: 4px 10px;
+    background: var(--gradient-brand);
+    color: white;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  .opp-card .icon {
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    display: grid; place-items: center;
+    margin-bottom: 16px;
+    font-size: 1.6rem;
+  }
+  .opp-card h3 { margin: 0 0 6px; font-size: 1.1rem; letter-spacing: -0.015em; }
+  .opp-card .desc { color: var(--muted); font-size: 0.88rem; line-height: 1.55; margin: 0 0 16px; }
+  .opp-card .impact {
+    background: var(--success-soft);
+    color: var(--success);
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+  .opp-card .cta-row { display: flex; gap: 8px; }
+</style>
+</head>
+<body>
+
+<div id="shell"></div>
+<script>window.FIA_PAGE = { title: 'Opportunity Engine', crumbs: 'Account / Opportunities', sub: 'Personalised recommendations to grow your identity.' };</script>
+<script src="assets/api.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/chrome.js"></script>
+
+<div>
+  <!-- Filters -->
+  <div class="row mb-3" style="gap:10px;flex-wrap:wrap;justify-content:space-between">
+    <div class="row" style="gap:8px;flex-wrap:wrap">
+      <button class="btn primary sm">All · 12</button>
+      <button class="btn secondary sm">Tax Savings · 3</button>
+      <button class="btn secondary sm">Insurance · 2</button>
+      <button class="btn secondary sm">Investments · 4</button>
+      <button class="btn secondary sm">Courses · 3</button>
+    </div>
+    <div class="row" style="gap:8px">
+      <span class="muted" style="font-size:0.85rem">Sort:</span>
+      <select class="select" style="padding:8px 12px;font-size:0.85rem;width:auto">
+        <option>Highest impact</option>
+        <option>Most affordable</option>
+        <option>Quickest win</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Featured grid -->
+  <div class="grid g-3" id="oppGrid"></div>
+
+  <!-- AI curator -->
+  <div class="card elev mt-3" style="background:linear-gradient(135deg, var(--accent) 0%, var(--violet) 100%);color:white;border:none;padding:32px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-50px;right:-50px;width:240px;height:240px;background:rgba(255,255,255,0.1);border-radius:50%;filter:blur(40px)"></div>
+    <div class="row" style="gap:20px;align-items:center;position:relative">
+      <div style="width:64px;height:64px;background:rgba(255,255,255,.18);border-radius:18px;display:grid;place-items:center;flex-shrink:0">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/></svg>
+      </div>
+      <div style="flex:1">
+        <h3 style="margin:0 0 6px;font-size:1.3rem;letter-spacing:-0.025em">Get a personal AI plan</h3>
+        <p style="margin:0;opacity:0.9">Tell AI your goals and constraints — get a 90-day plan curated for your DNA.</p>
+      </div>
+      <button class="btn" style="background:white;color:var(--accent)">Start Conversation →</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+  const OPPS = [
+    { ribbon: 'Top Match', ico: '🛡️', col: 'rgba(34,197,94,.12)', color: 'var(--success)', cat: 'Insurance', title: 'HDFC Ergo Optima Secure · Health Insurance', desc: '₹18L cover @ ₹12,400/yr. Cashless at 10,000+ hospitals. Recommended for your income bracket.', impact: 'Save ₹24,000 in tax · Boost Emergency Score +18', price: '₹1,033/mo', cta: 'Apply now' },
+    { ribbon: 'High ROI', ico: '📈', col: 'rgba(139,92,246,.12)', color: 'var(--violet)', cat: 'Tax Savings', title: 'ELSS via Kuvera · Tax-saving Mutual Funds', desc: 'Save ₹46,800 under Sec 80C with a 3-year lock-in. 12.4% historical CAGR.', impact: 'Save ₹46,800 in tax · ₹1.5L invested', price: '₹12,500/mo', cta: 'Start SIP' },
+    { ribbon: 'Free', ico: '🎓', col: 'rgba(20,184,166,.12)', color: 'var(--teal)', cat: 'Courses', title: 'Pricing Masterclass for Freelancers', desc: '4-hour video course by Radhika Gupta. Learn to 3x your project rates.', impact: 'Avg income boost: ₹24,800/mo', price: 'Free', cta: 'Enroll' },
+    { ico: '💼', col: 'rgba(37,99,235,.12)', color: 'var(--accent)', cat: 'Platforms', title: 'Switch to Upwork Pro · Talent Plus', desc: 'Premium profile matches your ₹85/hr rate. Connects fee waived first month.', impact: '+30% project visibility · ₹8k saved', price: '₹2,400/mo', cta: 'Try free' },
+    { ribbon: 'Quick Win', ico: '🏥', col: 'rgba(239,68,68,.12)', color: 'var(--danger)', cat: 'Insurance', title: 'Critical Illness Cover · ICICI Lombard', desc: '₹10L lump-sum payout on diagnosis of 64 critical illnesses.', impact: 'Boost Emergency Score +12', price: '₹850/mo', cta: 'Apply' },
+    { ico: '📚', col: 'rgba(245,158,11,.12)', color: 'var(--warning)', cat: 'Courses', title: 'Tax Planning for Freelancers · 2026', desc: 'A 2-hour crash course on Section 44ADA, 80C, 80D and GST.', impact: 'Save ₹32,400 in tax', price: '₹499', cta: 'Enroll' },
+    { ico: '💎', col: 'rgba(236,72,153,.12)', color: 'var(--pink)', cat: 'Investments', title: 'SGB 2026-27 · Sovereign Gold Bonds', desc: '2.5% annual interest + gold price appreciation. Tax-free returns.', impact: 'Beat inflation by 4-6%', price: 'Min ₹5,000', cta: 'Buy' },
+    { ico: '⚖️', col: 'rgba(37,99,235,.12)', color: 'var(--accent)', cat: 'Tax Savings', title: 'Term Insurance · Tata AIA Sampoorna Raksha', desc: '₹1Cr cover @ ₹8,400/yr. No medical test for your profile.', impact: 'Family protection + tax saving', price: '₹700/mo', cta: 'Apply' },
+    { ico: '🌐', col: 'rgba(139,92,246,.12)', color: 'var(--violet)', cat: 'Platforms', title: 'Fiverr Pro · Premium Seller Profile', desc: 'Get discovered by top buyers. Mentorship included.', impact: '+40% order value', price: '$39/mo', cta: 'Apply' },
+    { ico: '📊', col: 'rgba(20,184,166,.12)', color: 'var(--teal)', cat: 'Investments', title: 'Index Fund Nifty 50 · Direct Plan', desc: 'Low-cost passive investing. 14.2% CAGR over 10 years.', impact: 'Wealth compounding', price: 'Min ₹500', cta: 'Start SIP' },
+    { ico: '🚀', col: 'rgba(34,197,94,.12)', color: 'var(--success)', cat: 'Business', title: 'GST Registration Help · ClearTax', desc: 'Get registered in 7 days. Includes 1-year filing support.', impact: 'Save ₹18,000 in CA fees', price: '₹2,999 one-time', cta: 'Get started' },
+    { ico: '💳', col: 'rgba(245,158,11,.12)', color: 'var(--warning)', cat: 'Cards', title: 'Amex Business Platinum · Lifetime Free', desc: '5x rewards on travel and dining. Airport lounge access worldwide.', impact: '₹48k annual rewards', price: 'Free', cta: 'Apply' },
+  ];
+  document.getElementById('oppGrid').innerHTML = OPPS.map(o => `
+    <div class="opp-card">
+      ${o.ribbon ? `<div class="ribbon">${o.ribbon}</div>` : ''}
+      <div class="icon" style="background:${o.col};color:${o.color}">${o.ico}</div>
+      <span class="badge neutral" style="margin-bottom:8px">${o.cat}</span>
+      <h3>${o.title}</h3>
+      <p class="desc">${o.desc}</p>
+      <div class="impact">↑ ${o.impact}</div>
+      <div class="row between">
+        <strong>${o.price}</strong>
+        <button class="btn primary sm">${o.cta} →</button>
+      </div>
+    </div>
+  `).join('');
+}, 0));
+</script>
+</body>
+</html>

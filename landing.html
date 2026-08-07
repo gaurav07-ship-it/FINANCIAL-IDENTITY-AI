@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Financial Identity AI — Beyond Credit Scores</title>
+<meta name="description" content="Your Financial Identity Beyond Credit Scores. AI-powered financial identity for gig workers, freelancers and self-employed professionals." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'%3E%3Cpath d='M12 2L4 7l8 5 8-5-8-5z'/%3E%3Cpath d='M4 17l8 5 8-5M4 12l8 5 8-5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E" />
+<style>
+  /* === Landing-specific === */
+  .landing { position: relative; overflow-x: hidden; }
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center;
+    padding: 16px 32px;
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav nav { display: flex; gap: 28px; margin-left: 48px; }
+  .nav nav a { color: var(--text-2); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+  .nav nav a:hover { color: var(--accent); }
+  .nav .right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+
+  .hero {
+    position: relative;
+    padding: 80px 32px 100px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero .container { max-width: 1180px; margin: 0 auto; position: relative; z-index: 2; }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+    margin: 0 0 22px;
+  }
+  .hero h1 .accent { background: var(--gradient-brand); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero p.sub {
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
+    color: var(--muted);
+    max-width: 620px;
+    margin: 0 auto 32px;
+    line-height: 1.65;
+  }
+  .hero .ctas { display: inline-flex; gap: 12px; }
+
+  .hero-illus {
+    margin-top: 56px;
+    position: relative;
+    height: 420px;
+    border-radius: 24px;
+    background: var(--gradient-hero);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-xl);
+  }
+
+  /* Section base */
+  section { padding: 96px 32px; position: relative; }
+  section .container { max-width: 1180px; margin: 0 auto; }
+  .sec-title { text-align: center; margin-bottom: 56px; }
+  .sec-title h2 {
+    font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    margin: 12px 0 14px;
+  }
+  .sec-title p { color: var(--muted); max-width: 620px; margin: 0 auto; font-size: 1.05rem; }
+
+  /* Features */
+  .features { display: grid; gap: 18px; grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 900px) { .features { grid-template-columns: 1fr; } }
+  .feature-card {
+    position: relative; padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    transition: all 0.3s var(--ease);
+    overflow: hidden;
+  }
+  .feature-card .ico {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: grid; place-items: center;
+    margin-bottom: 16px;
+    transition: all 0.3s var(--ease);
+  }
+  .feature-card h3 { margin: 0 0 6px; font-size: 1.1rem; letter-spacing: -0.015em; }
+  .feature-card p { margin: 0; color: var(--muted); font-size: 0.92rem; line-height: 1.6; }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+    border-color: transparent;
+  }
+  .feature-card:hover .ico { transform: scale(1.1) rotate(-3deg); }
+  .feature-card::after {
+    content: "";
+    position: absolute;
+    bottom: -40px; right: -40px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: var(--gradient-brand);
+    opacity: 0;
+    transition: opacity 0.4s, transform 0.4s;
+    filter: blur(40px);
+  }
+  .feature-card:hover::after { opacity: 0.4; transform: scale(2); }
+
+  /* How it works timeline */
+  .steps {
+    display: grid;
+    gap: 0;
+    grid-template-columns: repeat(4, 1fr);
+    position: relative;
+  }
+  .steps::before {
+    content: "";
+    position: absolute;
+    top: 28px; left: 12%; right: 12%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    z-index: -1;
+  }
+  @media (max-width: 900px) { .steps { grid-template-columns: 1fr; gap: 32px; } .steps::before { display: none; } }
+  .step { text-align: center; padding: 0 14px; }
+  .step .num {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    display: grid; place-items: center;
+    font-weight: 700;
+    margin: 0 auto 18px;
+    font-size: 1.15rem;
+    box-shadow: 0 0 0 6px var(--accent-soft);
+  }
+  .step h3 { margin: 0 0 6px; font-size: 1rem; }
+  .step p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+  /* Stats strip */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    padding: 56px 32px;
+    background: linear-gradient(135deg, var(--surface), var(--surface-2));
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border);
+  }
+  @media (max-width: 900px) { .stats { grid-template-columns: repeat(2,1fr); } }
+  .stats .stat-block { text-align: center; }
+  .stats .stat-block .v { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.03em; }
+  .stats .stat-block .l { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+
+  /* Testimonials */
+  .testimonials { display: grid; gap: 18px; grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 900px) { .testimonials { grid-template-columns: 1fr; } }
+  .t-card {
+    padding: 24px;
+    background: color-mix(in srgb, var(--surface) 60%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .t-card p { margin: 0; font-size: 0.95rem; line-height: 1.65; color: var(--text-2); }
+  .t-card .who { display: flex; align-items: center; gap: 12px; }
+  .t-card .who .av {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: grid; place-items: center; color: white; font-weight: 700;
+  }
+  .t-card .who .name { font-weight: 600; font-size: 0.9rem; }
+  .t-card .who .role { font-size: 0.78rem; color: var(--muted); }
+  .stars { color: #FACC15; letter-spacing: 2px; }
+
+  /* Logos strip */
+  .logos {
+    display: flex; align-items: center; justify-content: center;
+    gap: 64px; flex-wrap: wrap;
+    padding: 24px;
+    opacity: 0.6;
+  }
+  .logos span {
+    font-weight: 700; font-size: 1.4rem;
+    letter-spacing: -0.02em;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+  .logos span:hover { color: var(--text); }
+
+  /* Pricing */
+  .pricing { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  @media (max-width: 900px) { .pricing { grid-template-columns: 1fr; } }
+  .plan {
+    padding: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    display: flex; flex-direction: column; gap: 14px;
+    transition: all 0.3s var(--ease);
+  }
+  .plan.feat {
+    background: linear-gradient(180deg, var(--accent-soft), var(--surface) 60%);
+    border-color: var(--accent);
+    box-shadow: var(--shadow-accent);
+    transform: scale(1.02);
+  }
+  .plan:hover { transform: translateY(-4px); box-shadow: var(--shadow-xl); }
+  .plan .price { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.03em; }
+  .plan ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; color: var(--text-2); font-size: 0.92rem; }
+  .plan ul li { display: flex; gap: 8px; align-items: start; }
+  .plan ul li svg { color: var(--success); flex-shrink: 0; margin-top: 3px; }
+
+  /* Footer */
+  footer {
+    background: var(--surface-2);
+    border-top: 1px solid var(--border);
+    padding: 64px 32px 32px;
+    margin-top: 64px;
+  }
+  footer .grid-foot {
+    display: grid;
+    grid-template-columns: 1.6fr repeat(3, 1fr);
+    gap: 56px;
+    max-width: 1180px;
+    margin: 0 auto 48px;
+  }
+  @media (max-width: 900px) { footer .grid-foot { grid-template-columns: 1fr 1fr; } }
+  footer h4 { margin: 0 0 14px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+  footer ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  footer ul a { font-size: 0.9rem; color: var(--text-2); }
+  footer ul a:hover { color: var(--accent); }
+  footer .copyright {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  /* Hero illustration */
+  .ill-card {
+    position: absolute;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    box-shadow: var(--shadow-xl);
+    animation: float 6s ease-in-out infinite;
+  }
+  .ill-card.c1 { top: 32px; left: 6%; width: 220px; animation-delay: 0s; }
+  .ill-card.c2 { top: 60px; right: 8%; width: 240px; animation-delay: 1s; }
+  .ill-card.c3 { bottom: 40px; left: 12%; width: 200px; animation-delay: 2s; }
+  .ill-card.c4 { bottom: 60px; right: 12%; width: 220px; animation-delay: 0.5s; }
+  .ill-card .lbl { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+  .ill-card .val { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; margin-top: 4px; }
+
+  .globe-wrap {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 240px; height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--gradient-brand), transparent 70%);
+    opacity: 0.7;
+    filter: blur(40px);
+  }
+</style>
+</head>
+<body class="landing">
+<!-- NAV -->
+<div class="nav">
+  <a href="landing.html" class="brand">
+    <span class="brand-mark">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 7l8 5 8-5-8-5z"/><path d="M4 17l8 5 8-5M4 12l8 5 8-5"/></svg>
+    </span>
+    <span class="brand-name">Financial Identity AI</span>
+  </a>
+  <nav>
+    <a href="#features">Features</a>
+    <a href="#how">How it Works</a>
+    <a href="#security">Security</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#testimonials">Reviews</a>
+  </nav>
+  <div class="right">
+    <button class="btn icon ghost" data-theme-toggle>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41"/></svg>
+    </button>
+    <a href="login.html" class="btn ghost">Login</a>
+    <a href="onboarding.html" class="btn primary">Create Identity</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="bg-mesh"></div>
+  <canvas class="particles"></canvas>
+
+  <div class="container fade-up">
+    <span class="badge info" style="padding:6px 12px;font-size:0.78rem">
+      <span class="dot pulse-soft"></span>
+      Live · 12,400+ identities created this week
+    </span>
+    <h1 style="margin-top:24px">
+      Your Financial Identity <br/>
+      <span class="accent">Beyond Credit Scores.</span>
+    </h1>
+    <p class="sub">
+      The first AI platform that builds a dynamic, predictive Financial Identity for gig workers, freelancers and self-employed professionals — by reading the way you earn, save and grow.
+    </p>
+    <div class="ctas">
+      <a href="onboarding.html" class="btn btn-grad lg">
+        Build My Financial Identity
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="#how" class="btn secondary lg">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+        Watch Demo
+      </a>
+    </div>
+
+    <!-- Hero illustration -->
+    <div class="hero-illus">
+      <div class="globe-wrap"></div>
+
+      <div class="ill-card c1">
+        <div class="lbl">Financial DNA</div>
+        <div class="val">847 <span style="font-size:0.7em;color:var(--muted)">/ 1000</span></div>
+        <div class="progress" style="margin-top:8px"><div class="fill" style="width:84%"></div></div>
+      </div>
+
+      <div class="ill-card c2">
+        <div class="lbl">Monthly Income</div>
+        <div class="val">₹84,200 <span class="delta up" style="font-size:0.65em;margin-left:6px">+12.4%</span></div>
+        <svg style="margin-top:6px" viewBox="0 0 200 30" height="30">
+          <polyline points="0,22 20,18 40,20 60,15 80,12 100,14 120,9 140,7 160,4 180,5 200,2" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <div class="ill-card c3">
+        <div class="lbl">Loan Eligibility</div>
+        <div class="val">₹6.2L <span style="font-size:0.7em;color:var(--muted)">@ 10.5%</span></div>
+        <div class="row" style="margin-top:8px;gap:6px;font-size:0.7rem"><span class="badge success"><span class="dot"></span> 92% match</span></div>
+      </div>
+
+      <div class="ill-card c4">
+        <div class="lbl" style="display:flex;align-items:center;gap:6px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/></svg>
+          AI Insight
+        </div>
+        <p style="margin:6px 0 0;font-size:0.78rem;color:var(--muted);line-height:1.5;max-width:200px">
+          Income diversification would improve your stability score by 18%.
+        </p>
+      </div>
+
+      <!-- Center placeholder -->
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;width:300px">
+        <div style="width:120px;height:120px;margin:0 auto 14px;background:var(--gradient-brand);border-radius:50%;display:grid;place-items:center;color:white;box-shadow:var(--shadow-xl)">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 7l8 5 8-5-8-5z"/><path d="M4 17l8 5 8-5M4 12l8 5 8-5"/></svg>
+        </div>
+        <div style="font-weight:600;letter-spacing:-0.02em">Analyzing 142 income signals</div>
+        <div class="progress" style="margin-top:10px"><div class="fill" style="width:78%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<section style="padding:48px 32px">
+  <div class="container" style="text-align:center">
+    <p style="font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.14em;margin:0 0 24px">Trusted by India's top lenders</p>
+    <div class="logos">
+      <span>Razorpay</span>
+      <span>Lendingkart</span>
+      <span>KredX</span>
+      <span>Indifi</span>
+      <span>Flexiloans</span>
+      <span>CreditMantri</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" style="background:var(--surface-2)">
+  <div class="container">
+    <div class="sec-title">
+      <span class="eyebrow">Identity Pillars</span>
+      <h2>The DNA of Your Money.</h2>
+      <p>Six dimensions of your financial life, analysed by an AI that learns with every transaction you make.</p>
+    </div>
+
+    <div class="features">
+      <div class="feature-card">
+        <div class="ico">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3>Income Stability</h3>
+        <p>Consistency of inflows, smoothed across seasonal ups and downs — for the way you actually work.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="ico" style="background:rgba(34,197,94,.1);color:var(--success)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/></svg>
+        </div>
+        <h3>Financial DNA</h3>
+        <p>Six-dimensional fingerprint of your money behaviour — discipline, growth, savings, risk and more.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="ico" style="background:rgba(139,92,246,.1);color:var(--violet)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/></svg>
+        </div>
+        <h3>Financial Twin</h3>
+        <p>A live digital twin that simulates life events — clients lost, EMIs, emergencies — so you can plan risk.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="ico" style="background:rgba(245,158,11,.1);color:var(--warning)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        </div>
+        <h3>Income Quality</h3>
+        <p>Not just how much you earn, but how reliable, growing and diversified that income actually is.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="ico" style="background:rgba(236,72,153,.1);color:var(--pink)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="4" r="2"/><circle cx="20" cy="20" r="2"/><path d="M9.7 9.7 5.4 5.4M14.3 14.3l4.3 4.3"/></svg>
+        </div>
+        <h3>Client Dependency</h3>
+        <p>Visualised network of who pays you — and how concentrated or diversified your income really is.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="ico" style="background:rgba(20,184,166,.1);color:var(--teal)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Financial Passport</h3>
+        <p>A portable, verifiable identity you can share with lenders in one tap. No PDFs, no paperwork.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="sec-title">
+      <span class="eyebrow">How it works</span>
+      <h2>Four steps to your Financial Identity.</h2>
+      <p>Ten minutes. Zero paperwork. AI handles the rest.</p>
+    </div>
+
+    <div class="steps">
+      <div class="step fade-up">
+        <div class="num">1</div>
+        <h3>Connect</h3>
+        <p>Securely link bank, UPI, gig platforms and invoices.</p>
+      </div>
+      <div class="step fade-up">
+        <div class="num">2</div>
+        <h3>Analyse</h3>
+        <p>AI reads 142 behavioural signals from your money flow.</p>
+      </div>
+      <div class="step fade-up">
+        <div class="num">3</div>
+        <h3>Identity</h3>
+        <p>Receive your Financial DNA, Twin and Passport.</p>
+      </div>
+      <div class="step fade-up">
+        <div class="num">4</div>
+        <h3>Share</h3>
+        <p>One-tap verification with India's top lenders.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section style="padding-top:0">
+  <div class="container">
+    <div class="stats">
+      <div class="stat-block">
+        <div class="v text-grad" data-counter="142" data-prefix="" data-suffix="+">0</div>
+        <div class="l">Behavioural Signals</div>
+      </div>
+      <div class="stat-block">
+        <div class="v text-grad" data-counter="94" data-suffix="%">0%</div>
+        <div class="l">Loan Approval Lift</div>
+      </div>
+      <div class="stat-block">
+        <div class="v text-grad" data-counter="48" data-suffix="h">0h</div>
+        <div class="l">Avg. Time to Eligibility</div>
+      </div>
+      <div class="stat-block">
+        <div class="v text-grad" data-counter="12000" data-prefix="">0</div>
+        <div class="l">Identities Created</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECURITY -->
+<section id="security" style="background:var(--surface-2)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center" class="security-grid">
+      <div>
+        <span class="eyebrow">Bank-grade Security</span>
+        <h2 style="font-size:2.2rem;letter-spacing:-0.025em;margin:10px 0 18px">Your data is yours. Always encrypted. Always private.</h2>
+        <p style="color:var(--muted);font-size:1.05rem;line-height:1.7;margin:0 0 24px">
+          We never store your raw financial data — only the insights our AI derives from it. All connections are read-only, encrypted with AES-256, and verified by India's RBI data-protection standards.
+        </p>
+        <ul class="row" style="flex-wrap:wrap;gap:12px;list-style:none;padding:0;margin:0">
+          <li class="badge neutral" style="padding:8px 14px;font-size:0.85rem">🔐 AES-256 Encryption</li>
+          <li class="badge neutral" style="padding:8px 14px;font-size:0.85rem">🏛️ RBI Compliant</li>
+          <li class="badge neutral" style="padding:8px 14px;font-size:0.85rem">🛡️ SOC 2 Type II</li>
+          <li class="badge neutral" style="padding:8px 14px;font-size:0.85rem">🧬 On-device AI</li>
+        </ul>
+      </div>
+      <div>
+        <div class="card" style="padding:0;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow-xl);border-radius:var(--radius-xl);overflow:hidden">
+          <div style="padding:32px;background:linear-gradient(135deg,var(--accent-soft),transparent)">
+            <div style="width:64px;height:64px;border-radius:18px;background:var(--gradient-brand);display:grid;place-items:center;color:white;margin-bottom:18px;box-shadow:var(--shadow-accent)">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h3 style="margin:0 0 6px;font-size:1.15rem">Privacy by Design</h3>
+            <p style="margin:0;color:var(--muted);font-size:0.92rem">Your raw financial data is never sold, shared, or used to train models outside your account.</p>
+          </div>
+          <div style="padding:24px;border-top:1px solid var(--border)">
+            <div class="row" style="justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+              <span style="font-size:0.9rem">Encryption</span>
+              <span class="badge success"><span class="dot"></span> Active</span>
+            </div>
+            <div class="row" style="justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+              <span style="font-size:0.9rem">Two-factor Auth</span>
+              <span class="badge success"><span class="dot"></span> Enabled</span>
+            </div>
+            <div class="row" style="justify-content:space-between;padding:10px 0">
+              <span style="font-size:0.9rem">Data Localisation</span>
+              <span class="badge success"><span class="dot"></span> India</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  @media (max-width: 900px) {
+    .security-grid { grid-template-columns: 1fr !important; }
+  }
+</style>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="container">
+    <div class="sec-title">
+      <span class="eyebrow">Loved by 12,000+ professionals</span>
+      <h2>Real stories from real earners.</h2>
+    </div>
+
+    <div class="testimonials">
+      <div class="t-card">
+        <div class="stars">★★★★★</div>
+        <p>"I got a ₹4.8L loan approved in 48 hours — without a single payslip. The Financial Twin showed me exactly how lenders were reading my income."</p>
+        <div class="who">
+          <div class="av" style="background:linear-gradient(135deg,#3B82F6,#06B6D4)">PM</div>
+          <div>
+            <div class="name">Priya Mehta</div>
+            <div class="role">UI Designer · Mumbai</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="t-card">
+        <div class="stars">★★★★★</div>
+        <p>"Better than any CA I've worked with. It flagged that 73% of my income was coming from one client, and helped me renegotiate my rates."</p>
+        <div class="who">
+          <div class="av" style="background:linear-gradient(135deg,#8B5CF6,#EC4899)">RK</div>
+          <div>
+            <div class="name">Ravi Kumar</div>
+            <div class="role">Independent Developer · Bengaluru</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="t-card">
+        <div class="stars">★★★★★</div>
+        <p>"I never realised how much gig income actually added up. My Financial DNA gave me the confidence to buy my first apartment."</p>
+        <div class="who">
+          <div class="av" style="background:linear-gradient(135deg,#22C55E,#10B981)">AS</div>
+          <div>
+            <div class="name">Aarti Singh</div>
+            <div class="role">Uber &amp; Zomato Partner · Pune</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="background:var(--surface-2)">
+  <div class="container">
+    <div class="sec-title">
+      <span class="eyebrow">Simple Pricing</span>
+      <h2>Free while you build. Pay when you grow.</h2>
+      <p>No hidden fees. No lock-in. Cancel anytime.</p>
+    </div>
+
+    <div class="pricing">
+      <div class="plan">
+        <span class="badge neutral">Starter</span>
+        <div class="price">₹0<span style="font-size:0.9rem;color:var(--muted);font-weight:500">/mo</span></div>
+        <p style="margin:0;color:var(--muted);font-size:0.9rem">Build and own your Financial Identity.</p>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Financial DNA</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 1 connected bank</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Basic passport</li>
+        </ul>
+        <a href="onboarding.html" class="btn secondary" style="margin-top:auto">Get Started Free</a>
+      </div>
+
+      <div class="plan feat">
+        <span class="badge info"><span class="dot"></span> Most Popular</span>
+        <div class="price">₹299<span style="font-size:0.9rem;color:var(--muted);font-weight:500">/mo</span></div>
+        <p style="margin:0;color:var(--muted);font-size:0.9rem">Everything you need to be loan-ready.</p>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Full DNA + Twin</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Unlimited accounts</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Loan eligibility reports</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> AI insights (unlimited)</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Shareable passport</li>
+        </ul>
+        <a href="onboarding.html" class="btn primary" style="margin-top:auto">Start Pro Trial</a>
+      </div>
+
+      <div class="plan">
+        <span class="badge dark">Premium</span>
+        <div class="price">₹999<span style="font-size:0.9rem;color:var(--muted);font-weight:500">/mo</span></div>
+        <p style="margin:0;color:var(--muted);font-size:0.9rem">For established freelancers &amp; founders.</p>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Everything in Pro</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Tax-saving AI</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Tax advisor chat</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Priority support</li>
+        </ul>
+        <a href="onboarding.html" class="btn secondary" style="margin-top:auto">Start Premium</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding:64px 32px">
+  <div class="container">
+    <div class="card" style="padding:64px;background:var(--gradient-brand);color:white;text-align:center;border:none;position:relative;overflow:hidden">
+      <div class="blob" style="top:-50px;left:-50px;width:300px;height:300px;background:rgba(255,255,255,0.15)"></div>
+      <h2 style="font-size:clamp(1.8rem,3vw,2.6rem);margin:0 0 14px;letter-spacing:-0.025em;position:relative">Ready to be more than a credit score?</h2>
+      <p style="max-width:560px;margin:0 auto 28px;opacity:0.92;position:relative">Build your Financial Identity in 10 minutes. Share it with any lender in one tap.</p>
+      <a href="onboarding.html" class="btn lg" style="background:white;color:var(--accent);position:relative">
+        Get Started — It's Free
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="grid-foot">
+    <div>
+      <a href="landing.html" class="brand" style="margin-bottom:16px">
+        <span class="brand-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 7l8 5 8-5-8-5z"/><path d="M4 17l8 5 8-5M4 12l8 5 8-5"/></svg></span>
+        <span class="brand-name">Financial Identity AI</span>
+      </a>
+      <p style="font-size:0.88rem;color:var(--muted);margin:8px 0 0;max-width:320px">Building India's first portable financial identity for the next generation of earners.</p>
+    </div>
+    <div>
+      <h4>Product</h4>
+      <ul>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="financial-dna.html">Financial DNA</a></li>
+        <li><a href="financial-twin.html">Financial Twin</a></li>
+        <li><a href="loan-eligibility.html">Loan Eligibility</a></li>
+        <li><a href="opportunity-engine.html">Opportunities</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+        <li><a href="#">Security</a></li>
+        <li><a href="#">Disclosure</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="copyright">
+    <span>© 2026 Financial Identity AI. All rights reserved.</span>
+    <div class="row" style="gap:18px">
+      <a href="#" aria-label="Twitter">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <a href="#" aria-label="LinkedIn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM8.339 18.337V9.667H5.667v8.67zM7.003 8.5a1.547 1.547 0 0 0 1.087-.441 1.507 1.507 0 0 0 .444-1.079 1.523 1.523 0 0 0-.444-1.087A1.547 1.547 0 0 0 7.003 5.5a1.547 1.547 0 0 0-1.087.441 1.523 1.523 0 0 0-.444 1.087c0 .42.165.815.444 1.079.279.276.654.441 1.087.441zm11.334 9.837v-4.752c0-2.473-1.32-3.622-3.082-3.622-1.42 0-2.057.781-2.412 1.329V9.667h-2.672c.034.755 0 8.67 0 8.67h2.672v-4.846c0-.244.018-.488.09-.662.193-.488.638-.992 1.385-.992.976 0 1.366.738 1.366 1.82v4.68z"/></svg>
+      </a>
+      <a href="#" aria-label="Instagram">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

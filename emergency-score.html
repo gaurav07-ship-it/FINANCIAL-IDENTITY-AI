@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Emergency Score — Financial Identity AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'%3E%3Cpath d='M12 2L4 7l8 5 8-5-8-5z'/%3E%3Cpath d='M4 17l8 5 8-5M4 12l8 5 8-5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E" />
+<style>
+  .score-card {
+    position: relative;
+    padding: 40px;
+    background: linear-gradient(135deg, var(--surface), var(--surface-2));
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .score-card .big {
+    font-size: 5rem;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--warning), var(--danger));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .score-card .label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); }
+  .score-card .status {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    background: var(--danger-soft);
+    color: var(--danger);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div id="shell"></div>
+<script>window.FIA_PAGE = { title: 'Emergency Score', crumbs: 'Insights / Emergency', sub: 'How prepared are you for life\'s surprises?' };</script>
+<script src="assets/api.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/chrome.js"></script>
+
+<div>
+  <div class="grid mb-3" style="grid-template-columns: 1fr 1fr;gap:18px">
+    <!-- Score -->
+    <div class="score-card">
+      <div style="position:absolute;top:-100px;right:-50px;width:300px;height:300px;background:radial-gradient(circle,var(--danger-soft),transparent 70%);border-radius:50%"></div>
+      <div style="position:relative">
+        <span class="status"><span class="dot pulse-soft"></span> At risk</span>
+        <div class="big mt-2" data-counter="42">0</div>
+        <div class="muted" style="font-size:0.95rem;margin-top:6px">/ 100 · Emergency Score</div>
+        <p class="muted mt-3" style="max-width:340px;font-size:0.92rem;line-height:1.6">You have <b>3.2 months</b> of expenses saved — but only 18% of recommended insurance cover.</p>
+        <div class="row mt-2" style="gap:18px">
+          <div><span class="muted" style="font-size:0.78rem">Months saved</span><div style="font-size:1.4rem;font-weight:700">3.2</div></div>
+          <div><span class="muted" style="font-size:0.78rem">Recommended</span><div style="font-size:1.4rem;font-weight:700">6+</div></div>
+          <div><span class="muted" style="font-size:0.78rem">Insurance cover</span><div style="font-size:1.4rem;font-weight:700">18%</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Readiness breakdown -->
+    <div class="card elev">
+      <div class="card-h">
+        <div>
+          <h3 class="card-title">Readiness Breakdown</h3>
+          <p class="card-sub">5 pillars of emergency preparedness</p>
+        </div>
+      </div>
+      <div class="col" style="gap:14px" id="pillars"></div>
+    </div>
+  </div>
+
+  <!-- Fund growth chart -->
+  <div class="card elev mb-3">
+    <div class="card-h">
+      <div>
+        <h3 class="card-title">Emergency Fund Growth</h3>
+        <p class="card-sub">Current trajectory vs. recommended path</p>
+      </div>
+      <div class="tabs">
+        <button>3M</button>
+        <button class="on">12M</button>
+        <button>24M</button>
+      </div>
+    </div>
+    <div class="chart" id="fundChart" style="height:280px"></div>
+    <div class="row mt-2" style="gap:18px;font-size:0.85rem">
+      <div><span class="badge info">●</span> <span class="muted">Your fund · ₹4,52,000</span></div>
+      <div><span class="badge success">●</span> <span class="muted">Recommended · ₹8,40,000</span></div>
+      <div class="spacer"></div>
+      <div class="muted">At current rate: <b>9 months to target</b></div>
+    </div>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="grid g-3">
+    <div class="card elev">
+      <div class="row" style="gap:14px;align-items:start">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(239,68,68,0.12);color:var(--danger);display:grid;place-items:center;flex-shrink:0">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div>
+          <h4 style="margin:0 0 4px;font-size:0.98rem">Top priority · Build fund to 6 months</h4>
+          <p class="muted" style="margin:0 0 14px;font-size:0.85rem;line-height:1.55">Stash ₹32,800/month into a liquid fund. Auto-transfer on the 2nd of every month.</p>
+          <button class="btn primary sm">Set up auto-save →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card elev">
+      <div class="row" style="gap:14px;align-items:start">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(245,158,11,0.12);color:var(--warning);display:grid;place-items:center;flex-shrink:0">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <h4 style="margin:0 0 4px;font-size:0.98rem">Get health insurance</h4>
+          <p class="muted" style="margin:0 0 14px;font-size:0.85rem;line-height:1.55">Cover of ₹18L @ ₹12k/year recommended. Currently: ₹3L personal cover.</p>
+          <a href="opportunity-engine.html" class="btn primary sm">See offers →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="card elev">
+      <div class="row" style="gap:14px;align-items:start">
+        <div style="width:48px;height:48px;border-radius:14px;background:rgba(34,197,94,0.12);color:var(--success);display:grid;place-items:center;flex-shrink:0">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 7l8 5 8-5-8-5z"/><path d="M4 17l8 5 8-5M4 12l8 5 8-5"/></svg>
+        </div>
+        <div>
+          <h4 style="margin:0 0 4px;font-size:0.98rem">You're doing well at…</h4>
+          <p class="muted" style="margin:0;font-size:0.85rem;line-height:1.55">Low credit utilisation (18%) and no missed EMI payments. Income continuity is strong.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- What if emergency -->
+  <div class="card elev mt-3" style="background:linear-gradient(135deg,var(--accent-soft),transparent)">
+    <div class="row" style="gap:18px;align-items:center">
+      <div style="width:60px;height:60px;border-radius:18px;background:var(--gradient-brand);color:white;display:grid;place-items:center;flex-shrink:0">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 7l8 5 8-5-8-5z"/><path d="M4 17l8 5 8-5M4 12l8 5 8-5"/></svg>
+      </div>
+      <div style="flex:1">
+        <h3 style="margin:0 0 6px;font-size:1.15rem">Simulate a sudden expense</h3>
+        <p class="muted" style="margin:0;font-size:0.92rem">What happens if you face a ₹3L medical bill or 4 months without income?</p>
+      </div>
+      <a href="financial-twin.html" class="btn primary">Run Twin →</a>
+    </div>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+  const PILLARS = [
+    { l: 'Emergency Fund', s: 56, color: 'var(--warning)', note: '3.2 months of expenses — recommended 6+' },
+    { l: 'Health Insurance', s: 18, color: 'var(--danger)', note: '₹3L cover — recommended ₹15L+' },
+    { l: 'Life Insurance', s: 32, color: 'var(--warning)', note: '₹12L term cover — should be 10x income' },
+    { l: 'Income Continuity', s: 86, color: 'var(--success)', note: 'Stable income stream across 4+ sources' },
+    { l: 'Discretionary Cushion', s: 64, color: 'var(--accent)', note: 'Healthy buffer in checking account' },
+  ];
+  document.getElementById('pillars').innerHTML = PILLARS.map(p => `
+    <div>
+      <div class="row between" style="margin-bottom:8px">
+        <strong style="font-size:0.92rem">${p.l}</strong>
+        <span style="font-weight:700">${p.s}<span class="muted">/100</span></span>
+      </div>
+      <div class="progress" style="height:6px"><div class="fill" style="width:${p.s}%;background:${p.color}"></div></div>
+      <p class="muted" style="margin:6px 0 0;font-size:0.8rem">${p.note}</p>
+    </div>
+  `).join('');
+
+  document.getElementById('fundChart').innerHTML = FIA.lineChart(
+    [180, 240, 280, 320, 360, 390, 410, 440, 460, 480, 510, 452],
+    { color: 'var(--accent)', smooth: true, height: 280, yPrefix: '₹', xLabels: ['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul'] }
+  );
+}, 0));
+</script>
+</body>
+</html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Financial Identity AI — Showcase Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'%3E%3Cpath d='M12 2L4 7l8 5 8-5-8-5z'/%3E%3Cpath d='M4 17l8 5 8-5M4 12l8 5 8-5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E" />
+<style>
+  .hero {
+    background: var(--gradient-brand);
+    border-radius: var(--radius-xl);
+    padding: 60px 48px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+  }
+  .hero::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: radial-gradient(60% 50% at 20% 30%, rgba(255,255,255,0.2), transparent 60%),
+                radial-gradient(40% 40% at 80% 70%, rgba(255,255,255,0.12), transparent 60%);
+  }
+  .hero h1 { margin: 0; font-size: clamp(2rem,4vw,3.2rem); letter-spacing: -0.035em; font-weight: 700; position: relative; }
+  .hero p { margin: 14px 0 0; opacity: 0.92; max-width: 700px; font-size: 1.05rem; position: relative; }
+  .hero .stats { display: flex; gap: 32px; margin-top: 32px; flex-wrap: wrap; position: relative; }
+  .hero .stat { }
+  .hero .stat .v { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.02em; }
+  .hero .stat .l { opacity: 0.78; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.12em; }
+
+  .group-h {
+    display: flex; align-items: center; gap: 12px;
+    margin: 48px 0 18px;
+  }
+  .group-h h2 { margin: 0; font-size: 1.4rem; letter-spacing: -0.025em; font-weight: 650; }
+  .group-h .line { flex: 1; height: 1px; background: var(--border); }
+  .group-h .count { font-size: 0.78rem; color: var(--muted); }
+
+  .grid-tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 900px) { .grid-tiles { grid-template-columns: 1fr; } }
+
+  .tile {
+    position: relative;
+    display: flex; flex-direction: column; gap: 14px;
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    transition: all 0.35s var(--ease);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    min-height: 200px;
+  }
+  .tile:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+    border-color: transparent;
+  }
+  .tile .ico {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: grid; place-items: center;
+    transition: all 0.3s var(--ease);
+  }
+  .tile:hover .ico { transform: scale(1.1) rotate(-3deg); }
+  .tile h3 { margin: 0; font-size: 1.1rem; letter-spacing: -0.02em; }
+  .tile p { margin: 0; color: var(--muted); font-size: 0.88rem; line-height: 1.55; flex: 1; }
+  .tile .arrow {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-top: auto;
+  }
+  .tile .badge-bg {
+    position: absolute; top: 14px; right: 14px;
+    padding: 4px 10px;
+    background: var(--gradient-brand);
+    color: white;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  .tile.violet .ico { background: rgba(139,92,246,.12); color: var(--violet); }
+  .tile.success .ico { background: var(--success-soft); color: var(--success); }
+  .tile.warn .ico { background: var(--warning-soft); color: var(--warning); }
+  .tile.teal .ico { background: rgba(20,184,166,.12); color: var(--teal); }
+  .tile.pink .ico { background: rgba(236,72,153,.12); color: var(--pink); }
+</style>
+</head>
+<body>
+<div style="max-width:1280px;margin:0 auto;padding:32px 32px 80px">
+
+  <!-- Top nav -->
+  <div class="row" style="justify-content:space-between;margin-bottom:48px">
+    <a href="landing.html" class="brand">
+      <span class="brand-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 7l8 5 8-5-8-5z"/><path d="M4 17l8 5 8-5M4 12l8 5 8-5"/></svg>
+      </span>
+      <span class="brand-name">Financial Identity AI</span>
+    </a>
+    <div class="row" style="gap:8px">
+      <button class="btn icon ghost" data-theme-toggle>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41"/></svg>
+      </button>
+      <a href="landing.html" class="btn secondary sm">Landing</a>
+      <a href="login.html" class="btn primary sm">Login</a>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <span class="badge" style="background:rgba(255,255,255,.18);color:white;border:1px solid rgba(255,255,255,.25);padding:6px 12px">
+      <span class="dot pulse-soft" style="background:#86EFAC"></span>
+      Investor Showcase · v1.0 · July 2026
+    </span>
+    <h1 style="margin-top:14px">Every screen of the Financial Identity AI platform.</h1>
+    <p>A complete walkthrough of every page, interaction and AI surface — built with a custom design system, animated SVG charts and a futuristic aesthetic ready for investors and users alike.</p>
+    <div class="stats">
+      <div class="stat"><div class="v">12</div><div class="l">Full Pages</div></div>
+      <div class="stat"><div class="v">200+</div><div class="l">Components</div></div>
+      <div class="stat"><div class="v">142</div><div class="l">AI Signals</div></div>
+      <div class="stat"><div class="v">Dark + Light</div><div class="l">Themed</div></div>
+    </div>
+  </div>
+
+  <!-- Public pages -->
+  <div class="group-h">
+    <h2>Public Pages</h2>
+    <div class="line"></div>
+    <span class="count">2 pages</span>
+  </div>
+  <div class="grid-tiles">
+    <a href="landing.html" class="tile">
+      <span class="badge-bg">Marketing</span>
+      <div class="ico">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22h20M2 11h20M15 22V11M9 22V11M3 22V8l9-6 9 6v14"/></svg>
+      </div>
+      <h3>Landing Page</h3>
+      <p>Hero, feature grid, how it works, security section, testimonials, pricing and footer. Animated gradient mesh background with floating particles.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+    <a href="login.html" class="tile">
+      <span class="badge-bg">Auth</span>
+      <div class="ico" style="background:rgba(139,92,246,.12);color:var(--violet)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h3>Authentication</h3>
+      <p>Split-screen login &amp; register. Animated illustration, password strength meter, animated validation. Google &amp; Apple SSO.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+    <a href="onboarding.html" class="tile">
+      <span class="badge-bg">10 steps</span>
+      <div class="ico" style="background:var(--success-soft);color:var(--success)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <h3>Multi-step Onboarding</h3>
+      <p>10-step flow with progress bar, animated icons, AI tips, drag-drop uploads and review step. Auto-saving.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+  </div>
+
+  <!-- Identity pages -->
+  <div class="group-h">
+    <h2>Identity &amp; Intelligence</h2>
+    <div class="line"></div>
+    <span class="count">3 pages</span>
+  </div>
+  <div class="grid-tiles">
+    <a href="dashboard.html" class="tile">
+      <span class="badge-bg">Core</span>
+      <div class="ico">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 14l4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg>
+      </div>
+      <h3>Main Dashboard</h3>
+      <p>Greeting, identity card, 5 KPI cards, income chart, source donut, DNA radar preview, AI insights, EMIs &amp; recommendations.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+    <a href="financial-dna.html" class="tile">
+      <span class="badge-bg">Signature</span>
+      <div class="ico" style="background:rgba(139,92,246,.12);color:var(--violet)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 11v4a1 1 0 0 0 1 1h1"/><path d="M14 9a2 2 0 0 0-4 0v6"/></svg>
+      </div>
+      <h3>Financial DNA</h3>
+      <p>Interactive 6-axis radar, dimension breakdown, peer comparison and explainable AI for each dimension.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+    <a href="financial-twin.html" class="tile violet">
+      <span class="badge-bg">Futuristic</span>
+      <div class="ico">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/></svg>
+      </div>
+      <h3>Financial Twin</h3>
+      <p>Live digital avatar, what-if sliders, scenario presets, real-time predictions and 5-year net-worth projection.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+  </div>
+
+  <!-- Insight pages -->
+  <div class="group-h">
+    <h2>Insights</h2>
+    <div class="line"></div>
+    <span class="count">5 pages</span>
+  </div>
+  <div class="grid-tiles">
+    <a href="loan-eligibility.html" class="tile">
+      <div class="ico" style="background:var(--success-soft);color:var(--success)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/></svg>
+      </div>
+      <h3>Loan Eligibility</h3>
+      <p>AI-recommended offers from 8 lenders, EMI calculator, approval ring, reasons breakdown and improvement tips.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+    <a href="client-dependency.html" class="tile warn">
+      <div class="ico">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="4" r="2"/><circle cx="20" cy="20" r="2"/><path d="M9.7 9.7 5.4 5.4M14.3 14.3l4.3 4.3"/></svg>
+      </div>
+      <h3>Client Dependency</h3>
+      <p>Bubble network of income sources, top-client cards, concentration timeline and diversification suggestions.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+    <a href="income-quality.html" class="tile teal">
+      <div class="ico">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      </div>
+      <h3>Income Quality</h3>
+      <p>Consistency bar chart, payout heatmap, AI explanation cards, monthly score history and trend lines.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+    <a href="emergency-score.html" class="tile pink">
+      <div class="ico">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3>Emergency Score</h3>
+      <p>5-pillar readiness breakdown, fund growth chart vs. target and AI-prioritised recommendations.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+    <a href="opportunity-engine.html" class="tile violet">
+      <div class="ico">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l-1.9 5.8"/></svg>
+      </div>
+      <h3>Opportunity Engine</h3>
+      <p>12 personalised recommendations across insurance, tax, courses and platforms — with impact estimates.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+  </div>
+
+  <!-- Account -->
+  <div class="group-h">
+    <h2>Account &amp; Admin</h2>
+    <div class="line"></div>
+    <span class="count">2 pages</span>
+  </div>
+  <div class="grid-tiles">
+    <a href="settings.html" class="tile teal">
+      <div class="ico">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33"/></svg>
+      </div>
+      <h3>Settings</h3>
+      <p>Profile, security, theme picker, notifications, connected accounts, privacy controls and danger zone.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+    <a href="admin.html" class="tile warn">
+      <span class="badge-bg">Internal</span>
+      <div class="ico">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h3>Admin Panel</h3>
+      <p>Users, traffic analytics, model performance, fraud alerts, audit logs and live system health.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+    <a href="landing.html#pricing" class="tile">
+      <div class="ico" style="background:rgba(236,72,153,.12);color:var(--pink)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <h3>Pricing Page</h3>
+      <p>Three plans · Monthly billing · Per-feature breakdown · Most-popular highlight. On the landing page.</p>
+      <span class="arrow">Open page →</span>
+    </a>
+  </div>
+
+  <!-- Design notes -->
+  <div class="group-h">
+    <h2>Design System</h2>
+    <div class="line"></div>
+    <span class="count">tokens &amp; motion</span>
+  </div>
+  <div class="card elev" style="padding:32px">
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px">
+      <div>
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:10px">Colors</div>
+        <div style="display:grid;gap:8px">
+          <div class="row" style="gap:10px"><span style="width:32px;height:32px;background:#2563EB;border-radius:8px;flex-shrink:0"></span><span style="font-size:0.88rem">#2563EB</span></div>
+          <div class="row" style="gap:10px"><span style="width:32px;height:32px;background:#22C55E;border-radius:8px;flex-shrink:0"></span><span style="font-size:0.88rem">#22C55E</span></div>
+          <div class="row" style="gap:10px"><span style="width:32px;height:32px;background:#F59E0B;border-radius:8px;flex-shrink:0"></span><span style="font-size:0.88rem">#F59E0B</span></div>
+          <div class="row" style="gap:10px"><span style="width:32px;height:32px;background:#EF4444;border-radius:8px;flex-shrink:0"></span><span style="font-size:0.88rem">#EF4444</span></div>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:10px">Typography</div>
+        <div style="font-size:2rem;font-weight:700;letter-spacing:-0.03em;line-height:1">Aa</div>
+        <div class="muted" style="font-size:0.85rem">Inter · 400/500/600/650/700/800</div>
+      </div>
+      <div>
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:10px">Icons</div>
+        <div class="row" style="gap:14px;color:var(--text-2)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L4 7l8 5 8-5-8-5z"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect width="20" height="14" x="2" y="7" rx="2"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="muted" style="font-size:0.85rem;margin-top:8px">Lucide · Outline · 18px / 22px</div>
+      </div>
+      <div>
+        <div style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:10px">Motion</div>
+        <div class="row" style="gap:10px;flex-wrap:wrap">
+          <span class="badge info float" style="background:var(--accent-soft);color:var(--accent)">Float</span>
+          <span class="badge info pulse-soft" style="background:var(--success-soft);color:var(--success)">Pulse</span>
+          <span class="badge info fade-up" style="background:rgba(139,92,246,.1);color:var(--violet)">Fade-up</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer style="margin-top:64px;padding-top:32px;border-top:1px solid var(--border);display:flex;justify-content:space-between;color:var(--muted);font-size:0.85rem">
+    <span>© 2026 Financial Identity AI — Static showcase for investors</span>
+    <span>Built with HTML · CSS · Vanilla JS · 12 pages</span>
+  </footer>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

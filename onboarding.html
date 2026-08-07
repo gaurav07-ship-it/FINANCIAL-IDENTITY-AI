@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Create Your Identity — Financial Identity AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'%3E%3Cpath d='M12 2L4 7l8 5 8-5-8-5z'/%3E%3Cpath d='M4 17l8 5 8-5M4 12l8 5 8-5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E" />
+<style>
+  /* Onboarding layout */
+  .ob {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    min-height: 100vh;
+  }
+  .ob-art {
+    position: relative;
+    background: linear-gradient(135deg, #0B1120 0%, #1e1b4b 50%, #0B1120 100%);
+    color: white;
+    display: flex; flex-direction: column;
+    padding: 48px;
+    overflow: hidden;
+  }
+  .ob-art .progress-wrap {
+    position: absolute; top: 48px; left: 48px; right: 48px;
+  }
+  .ob-content {
+    padding: 48px 80px;
+    background: var(--bg);
+    overflow-y: auto;
+  }
+  @media (max-width: 900px) {
+    .ob { grid-template-columns: 1fr; }
+    .ob-art { padding: 32px; min-height: 220px; }
+    .ob-art .progress-wrap { position: static; margin-top: 60px; }
+    .ob-content { padding: 24px; }
+    .ob-art { display: none; }
+  }
+  .ob-step {
+    display: none;
+    animation: fade-up 0.5s var(--ease) both;
+  }
+  .ob-step.active { display: block; }
+  .ob-ill {
+    flex: 1; display: grid; place-items: center;
+    position: relative;
+  }
+  .ob-ill .ico-circle {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(59,130,246,0.15);
+    border: 2px solid rgba(255,255,255,0.2);
+    display: grid; place-items: center;
+    position: relative;
+    animation: float 6s ease-in-out infinite;
+  }
+  .ob-ill .ico-circle::before {
+    content: "";
+    position: absolute; inset: -16px;
+    border-radius: 50%;
+    border: 1px dashed rgba(255,255,255,0.18);
+    animation: rotate 20s linear infinite;
+  }
+  .ob-ill .rings {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+  }
+  .ob-ill .stat-tile {
+    position: absolute;
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    animation: float 6s ease-in-out infinite;
+  }
+  .ob-ill .stat-tile.t1 { top: 24%; left: 10%; animation-delay: 0s; }
+  .ob-ill .stat-tile.t2 { top: 18%; right: 6%; animation-delay: 1s; }
+  .ob-ill .stat-tile.t3 { bottom: 18%; left: 8%; animation-delay: 2s; }
+
+  .upload-zone {
+    border: 2px dashed var(--border-strong);
+    border-radius: 14px;
+    padding: 28px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    background: var(--surface);
+  }
+  .upload-zone:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .upload-zone.drag { border-color: var(--accent); background: var(--accent-soft); transform: scale(1.01); }
+  .upload-zone .ico {
+    width: 56px; height: 56px;
+    margin: 0 auto 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 14px;
+    display: grid; place-items: center;
+  }
+
+  .goal-chip {
+    display: inline-flex; gap: 6px; align-items: center;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    font-size: 0.85rem; font-weight: 500;
+    transition: all 0.2s;
+  }
+  .goal-chip.on {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .goal-chip:hover { border-color: var(--border-strong); }
+
+  .occ-card {
+    cursor: pointer;
+    text-align: center;
+    padding: 24px;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .occ-card:hover { border-color: var(--border-strong); }
+  .occ-card.on {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .bank-tile {
+    cursor: pointer;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.85rem;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .bank-tile:hover { border-color: var(--border-strong); }
+  .bank-tile.on {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+</style>
+</head>
+<body class="no-chrome" data-page="onboarding">
+
+<div class="ob">
+  <!-- Art side -->
+  <div class="ob-art">
+    <a href="landing.html" class="brand" style="color:white">
+      <span class="brand-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 7l8 5 8-5-8-5z"/><path d="M4 17l8 5 8-5M4 12l8 5 8-5"/></svg></span>
+      <span class="brand-name">Financial Identity AI</span>
+    </a>
+
+    <div class="progress-wrap">
+      <div class="row" style="justify-content:space-between;color:rgba(255,255,255,0.7);font-size:0.8rem;margin-bottom:10px">
+        <span><span id="stepName">Personal details</span></span>
+        <span><span id="stepCur">1</span> / <span id="stepTot">10</span></span>
+      </div>
+      <div class="step-bar" id="stepBar"></div>
+    </div>
+
+    <div class="ob-ill">
+      <div class="rings">
+        <div style="width:400px;height:400px;border:1px dashed rgba(255,255,255,0.12);border-radius:50%;position:absolute"></div>
+        <div style="width:280px;height:280px;border:1px dashed rgba(255,255,255,0.18);border-radius:50%;position:absolute"></div>
+      </div>
+
+      <div class="ico-circle" id="obIco">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+
+      <div class="stat-tile t1">
+        <div style="opacity:0.7;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em">AI Analysis</div>
+        <div style="font-weight:700;font-size:1.1rem">142 signals</div>
+      </div>
+      <div class="stat-tile t2">
+        <div style="opacity:0.7;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em">Encrypted</div>
+        <div style="font-weight:700;font-size:1.1rem">AES-256</div>
+      </div>
+      <div class="stat-tile t3">
+        <div style="opacity:0.7;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em">Saves Auto</div>
+        <div style="font-weight:700;font-size:1.1rem">Real-time</div>
+      </div>
+    </div>
+
+    <div style="margin-top:auto;color:rgba(255,255,255,0.7);font-size:0.85rem">
+      <p style="margin:0"><svg style="vertical-align:middle" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Read-only · You can revoke anytime</p>
+    </div>
+  </div>
+
+  <!-- Content side -->
+  <div class="ob-content">
+    <div style="max-width:560px;margin:0 auto">
+      <div id="obSteps"></div>
+
+      <!-- Footer nav -->
+      <div class="row" style="justify-content:space-between;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)">
+        <button class="btn ghost" id="obPrev" type="button">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back
+        </button>
+        <span class="muted" style="font-size:0.85rem" id="obHint">Press <span class="kbd">Enter ↵</span> to continue</span>
+        <button class="btn primary" id="obNext" type="button">
+          Continue
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/api.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/store.js"></script>
+<script>
+/* Onboarding reads/writes STORE at every step so the rest of the
+   app sees the user's actual choices. */
+
+const OCCUPATIONS = [
+  { k: 'Freelancer',      e: '💻', d: 'I work with multiple clients' },
+  { k: 'Gig Worker',      e: '🚀', d: 'Uber, Zomato, Swiggy, etc.' },
+  { k: 'Business Owner',  e: '🏪', d: 'I own a small business' },
+  { k: 'Creator',         e: '🎨', d: 'YouTube, design, content' },
+];
+
+const escapeHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+
+/* ===== Validation ===== */
+const NAME_RE = /^[\p{L}][\p{L}\s.'-]*[\p{L}.']$/u;
+const PHONE_RE = /^[6-9]\d{9}$/;
+
+function todayISO() { return new Date().toISOString().slice(0, 10); }
+function yearsBetween(iso) {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return null;
+  const now = new Date();
+  let age = now.getFullYear() - d.getFullYear();
+  const m = now.getMonth() - d.getMonth();
+  if (m < 0 || (m === 0 && now.getDate() < d.getDate())) age--;
+  return age;
+}
+
+function cleanPhone(raw) {
+  if (!raw) return '';
+  return String(raw).replace(/\D/g, '').replace(/^91/, '').replace(/^0/, '');
+}
+
+const stepValidators = {
+  /* Step 1 — Personal */
+  0: (s) => {
+    const errs = {};
+    const name = (s.personal.name || '').trim();
+    if (!name) errs['personal.name'] = 'Please enter your full name.';
+    else if (name.length < 2) errs['personal.name'] = 'Name is too short.';
+    else if (name.length > 60) errs['personal.name'] = 'Name is too long (max 60 chars).';
+    else if (!NAME_RE.test(name)) errs['personal.name'] = 'Use letters, spaces, periods, hyphens only.';
+
+    const dob = s.personal.dob || '';
+    if (!dob) errs['personal.dob'] = 'Please pick your date of birth.';
+    else {
+      const age = yearsBetween(dob);
+      if (age === null) errs['personal.dob'] = 'Invalid date.';
+      else if (age < 18) errs['personal.dob'] = 'You must be at least 18 years old.';
+      else if (age > 100) errs['personal.dob'] = 'Please enter a valid date of birth.';
+      else if (dob > todayISO()) errs['personal.dob'] = 'Date of birth cannot be in the future.';
+    }
+
+    const city = s.personal.city || '';
+    if (!city) errs['personal.city'] = 'Please choose your city.';
+    else if (!STORE.catalogs.CITIES.includes(city)) errs['personal.city'] = 'Pick a city from the list.';
+
+    const phoneDigits = cleanPhone(s.personal.phone);
+    if (!phoneDigits) errs['personal.phone'] = 'Mobile number is required.';
+    else if (!PHONE_RE.test(phoneDigits)) errs['personal.phone'] = 'Enter a valid 10-digit Indian mobile number.';
+
+    return errs;
+  },
+  /* Step 2 — Occupation */
+  1: (s) => s.occupation ? {} : { occupation: 'Please pick how you earn.' },
+  /* Step 3 — Income sources */
+  2: (s) => s.incomeSources.length ? {} : { sources: 'Select at least one income source.' },
+  /* Step 4 — Bank */
+  3: (s) => s.banks.primary ? {} : { bank: 'Pick your primary bank to continue.' },
+  /* Step 5 — UPI */
+  4: (s) => s.upi.length ? {} : { upi: 'Select at least one UPI app.' },
+  /* Step 6 — Gig platforms */
+  5: (s) => {
+    if (!s.incomeSources.includes('Gig Platforms')) return {};
+    return s.gigPlatforms.length ? {} : { gigs: 'Pick at least one gig platform you work with.' };
+  },
+  /* Step 7 — Goals + annual goal */
+  6: (s) => {
+    const errs = {};
+    if (!s.goals.length) errs.goals = 'Pick at least one goal so we can personalise your dashboard.';
+    const g = Number(s.annualGoal);
+    if (!g || isNaN(g)) errs['annualGoal'] = 'Enter your annual income goal.';
+    else if (g < 50000) errs['annualGoal'] = 'Goal must be at least ₹50,000.';
+    else if (g > 100000000) errs['annualGoal'] = 'Goal must be under ₹10 crore.';
+    return errs;
+  },
+  /* Step 8 — Permissions: defaults are fine */
+  7: () => ({}),
+  /* Step 9 — Review (always valid if we got here) */
+  8: () => ({}),
+  /* Step 10 — Finish */
+  9: () => ({}),
+};
+
+function validateStep(i = cur) {
+  return stepValidators[i] ? stepValidators[i](STORE.get()) : {};
+}
+
+let activeErrors = {};
+
+function applyErrorsToDOM() {
+  document.querySelectorAll('.field[data-field]').forEach(f => f.removeAttribute('data-field'));
+  const root = document.getElementById('obSteps');
+  if (!root) return;
+  Object.entries(activeErrors).forEach(([k, msg]) => {
+    const el = root.querySelector(`[data-bind="${k}"]`) || root.querySelector(`#${CSS.escape(k)}`);
+    if (!el) return;
+    const field = el.closest('.field') || el.parentElement;
+    if (!field) return;
+    field.setAttribute('data-field', k);
+    field.classList.add('has-error');
+    el.classList.add('err');
+    el.setAttribute('aria-invalid', 'true');
+    let errEl = field.querySelector('.err[data-err]');
+    if (!errEl) {
+      errEl = document.createElement('span');
+      errEl.className = 'err';
+      errEl.setAttribute('data-err', k);
+      el.insertAdjacentElement('afterend', errEl);
+    }
+    errEl.textContent = msg;
+  });
+  /* Clear fields without errors */
+  root.querySelectorAll('[data-bind], #annualGoal').forEach(el => {
+    const path = el.dataset.bind || el.id;
+    if (!activeErrors[path]) {
+      el.classList.remove('err');
+      el.removeAttribute('aria-invalid');
+      const field = el.closest('.field');
+      if (field) {
+        const errEl = field.querySelector('.err[data-err]');
+        if (errEl) errEl.remove();
+      }
+    }
+  });
+}
+
+function refreshValidation() {
+  activeErrors = validateStep();
+  const nextBtn = document.getElementById('obNext');
+  if (nextBtn) {
+    const last = cur === STEPS.length - 1;
+    if (!last && Object.keys(activeErrors).length) {
+      nextBtn.setAttribute('disabled', 'true');
+    } else {
+      nextBtn.removeAttribute('disabled');
+    }
+  }
+}
+
+const STEPS = [
+  { name: 'Personal Details', q: 'Let\'s start with who you are.', ico: 'user', render: () => {
+    const p = STORE.get().personal;
+    const maxDob = (() => {
+      const d = new Date(); d.setFullYear(d.getFullYear() - 18);
+      return d.toISOString().slice(0, 10);
+    })();
+    const minDob = (() => {
+      const d = new Date(); d.setFullYear(d.getFullYear() - 100);
+      return d.toISOString().slice(0, 10);
+    })();
+    return `
+    <div class="field"><label>Full Name <span class="muted">*</span></label><input class="input" data-bind="personal.name" placeholder="e.g. Arjun Joshi" value="${escapeHtml(p.name)}" autocomplete="name" maxlength="60" /></div>
+    <div class="grid g-2">
+      <div class="field"><label>Date of Birth <span class="muted">*</span></label><input class="input" type="date" data-bind="personal.dob" value="${escapeHtml(p.dob)}" min="${minDob}" max="${maxDob}" /></div>
+      <div class="field"><label>City <span class="muted">*</span></label>
+        <select class="select" data-bind="personal.city">
+          <option value="">— Choose your city —</option>
+          ${STORE.catalogs.CITIES.map(c => `<option value="${c}" ${c === p.city ? 'selected' : ''}>${c}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Mobile Number <span class="muted">*</span></label>
+      <div class="input-group">
+        <div class="lead" style="font-size:0.85rem;font-weight:600">+91</div>
+        <input class="input" data-bind="personal.phone" placeholder="98765 43210" value="${escapeHtml(p.phone)}" inputmode="numeric" autocomplete="tel" maxlength="14" />
+      </div>
+      <span class="hint">We'll send a one-time code for verification.</span>
+    </div>`;
+  }, tip: '💡 Tip: Use your legal name as it appears on PAN.', showErrSummary: true},
+
+  { name: 'Occupation', q: 'How do you earn?', ico: 'briefcase', render: () => {
+    const cur = STORE.get().occupation;
+    return `<div class="grid g-2" id="occGrid">
+      ${OCCUPATIONS.map(o => `
+        <div class="occ-card card elev ${cur === o.k ? 'on' : ''}" data-occ="${o.k}" tabindex="0" role="button" aria-pressed="${cur === o.k}">
+          <div style="font-size:2.5rem">${o.e}</div>
+          <strong style="display:block;margin:8px 0 4px">${o.k}</strong>
+          <span class="muted" style="font-size:0.85rem">${o.d}</span>
+        </div>`).join('')}
+    </div>`;
+  }, tip: '💡 You can update your occupation type anytime from Settings.'},
+
+  { name: 'Income Sources', q: 'Where does your money come from?', ico: 'income', render: () => {
+    const sel = new Set(STORE.get().incomeSources);
+    return `<div class="col" style="gap:8px">
+      ${STORE.catalogs.SOURCES.map(s => `
+        <label class="card elev source-row" style="cursor:pointer;display:flex;align-items:center;gap:14px;padding:14px 18px">
+          <div style="width:44px;height:44px;border-radius:12px;background:var(--surface-2);display:grid;place-items:center;font-size:1.4rem">${s.i}</div>
+          <div style="flex:1"><strong>${s.n}</strong><div class="muted" style="font-size:0.82rem">${s.d}</div></div>
+          <input type="checkbox" data-source="${s.n}" ${sel.has(s.n) ? 'checked' : ''} style="width:18px;height:18px;accent-color:var(--accent)" />
+        </label>`).join('')}
+    </div>`;
+  }, tip: '💡 Select all that apply. Diversified income raises your identity score.'},
+
+  { name: 'Bank Upload', q: 'Connect your primary bank account', ico: 'bank', render: () => {
+    const bank = STORE.get().banks;
+    return `
+    <div class="upload-zone" id="bankDrop" role="button" tabindex="0">
+      <div class="ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+      <strong style="display:block">Drop your bank statement</strong>
+      <p class="muted" style="margin:6px 0 0;font-size:0.85rem">CSV, PDF or XLS · Up to 50MB</p>
+      <p class="muted" id="bankUploadMsg" style="margin:6px 0 0;font-size:0.85rem;color:var(--success);font-weight:600">${escapeHtml(bank.uploaded || '')}</p>
+      <button class="btn secondary sm" style="margin-top:14px" type="button">Browse Files</button>
+    </div>
+    <div class="grid g-3 mt-2" style="gap:10px">
+      ${STORE.catalogs.BANKS.slice(0, 5).map(b => `
+        <div class="bank-tile card elev ${bank.primary === b ? 'on' : ''}" data-bank="${b}" tabindex="0" role="button" aria-pressed="${bank.primary === b}"><span style="font-weight:600">${b}</span></div>
+      `).join('')}
+      <div class="bank-tile more card elev">+${STORE.catalogs.BANKS.length - 5} more</div>
+    </div>`;
+  }, tip: '💡 We auto-delete uploaded files after 30 days. Raw data never leaves India.'},
+
+  { name: 'UPI Upload', q: 'Link your UPI transaction history', ico: 'upi', render: () => {
+    const sel = new Set(STORE.get().upi);
+    return `<div class="col" style="gap:8px">
+      ${STORE.catalogs.UPI_APPS.map(p => `
+        <label class="card elev" style="cursor:pointer;padding:14px 18px;text-align:center;min-width:140px;display:block">
+          <input type="checkbox" data-upi="${p}" ${sel.has(p) ? 'checked' : ''} style="accent-color:var(--accent)" />
+          <div style="margin-top:6px;font-weight:600">${p}</div>
+        </label>`).join('')}
+    </div>`;
+  }, tip: '💡 UPI data reveals 60% more behavioural insights than bank alone.'},
+
+  { name: 'Gig Platforms', q: 'Which platforms do you work with?', ico: 'platforms', render: () => {
+    const sel = new Set(STORE.get().gigPlatforms);
+    return `<div class="grid g-3" style="gap:14px">
+      ${STORE.catalogs.GIG.map(p => `
+        <div class="card elev gig-tile" data-gig="${p}" data-on="${sel.has(p)}" tabindex="0" role="button" aria-pressed="${sel.has(p)}">
+          <div style="font-size:2rem">${p[0]}</div>
+          <strong style="display:block;margin-top:6px;font-size:0.92rem">${p}</strong>
+          <label class="switch" style="margin-top:8px;justify-content:center">
+            <input type="checkbox" ${sel.has(p) ? 'checked' : ''} />
+            <span class="track"></span>
+          </label>
+        </div>`).join('')}
+    </div>`;
+  }, tip: '💡 Platform income earns bonus points in Income Quality.'},
+
+  { name: 'Goals', q: 'What are you saving for?', ico: 'goal', render: () => {
+    const sel = new Set(STORE.get().goals);
+    const goal = STORE.get().annualGoal || 1500000;
+    return `<div class="col" style="gap:14px">
+      <p class="muted" style="margin:0">Pick all that apply. We'll personalize your dashboard.</p>
+      <div class="row" style="flex-wrap:wrap;gap:10px">
+        ${STORE.catalogs.GOALS.map(g => `
+          <button type="button" class="goal-chip ${sel.has(g) ? 'on' : ''}" data-goal="${g}" aria-pressed="${sel.has(g)}">${g}</button>
+        `).join('')}
+      </div>
+      <div class="field mt-3">
+        <label>Annual Income Goal (₹) <span class="muted">*</span></label>
+        <input class="input" type="number" id="annualGoal" value="${goal}" min="50000" max="100000000" step="5000" />
+        <span class="hint">What you aim to earn in the next 12 months. Min ₹50,000 · Max ₹10cr.</span>
+      </div>
+    </div>`;
+  }, tip: '💡 We use goals only to suggest opportunities — never to score you lower.'},
+
+  { name: 'Permissions', q: 'Let\'s stay connected', ico: 'bell', render: () => {
+    const perms = STORE.get().permissions;
+    const items = [
+      { k: 'email',       l: 'Email Notifications', d: 'Weekly insights, alerts and tips.' },
+      { k: 'push',        l: 'Push Notifications',  d: 'Real-time payment & risk alerts.' },
+      { k: 'lenderShare', l: 'Lender Sharing',      d: 'Allow approved lenders to view my Financial Passport.' },
+      { k: 'aiTrainer',   l: 'AI Trainer',          d: 'Help improve AI models with anonymized insights.' },
+    ];
+    return `<div class="col" style="gap:10px">
+      ${items.map(p => `
+        <div class="card elev" style="padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px">
+          <div>
+            <strong style="display:block;font-size:0.95rem">${p.l}</strong>
+            <span class="muted" style="font-size:0.82rem">${p.d}</span>
+          </div>
+          <label class="switch"><input type="checkbox" data-perm="${p.k}" ${perms[p.k] ? 'checked' : ''} /><span class="track"></span></label>
+        </div>`).join('')}
+    </div>`;
+  }, tip: '💡 You can change every permission from Settings later.'},
+
+  { name: 'Review', q: 'Confirm your details', ico: 'check', render: () => {
+    const s = STORE.get();
+    const d = STORE.computeDerived(s);
+    const rows = [
+      ['Personal', [
+        s.personal.name || '—',
+        s.personal.dob || '—',
+        s.personal.city || '—',
+        s.personal.phone ? '+91 ' + s.personal.phone : '—',
+      ]],
+      ['Occupation', s.occupation || '—'],
+      ['Income Sources', s.incomeSources.length ? s.incomeSources.join(', ') : 'None selected'],
+      ['Banking', [
+        s.banks.primary ? s.banks.primary + ' Bank' : 'No bank selected',
+        s.upi.length + ' UPI app' + (s.upi.length === 1 ? '' : 's') + ' linked',
+        s.gigPlatforms.length + ' gig platform' + (s.gigPlatforms.length === 1 ? '' : 's'),
+      ]],
+      ['Goals', s.goals.length ? s.goals.join(' · ') : 'None selected'],
+      ['Annual Goal', '₹' + (s.annualGoal || 0).toLocaleString('en-IN')],
+      ['Permissions', Object.values(s.permissions).filter(Boolean).length + ' of 4 enabled'],
+      ['DNA Score (preview)', d.dnaScore + '/1000'],
+    ];
+    return `<div class="card" style="padding:0;overflow:hidden" id="reviewSummary">
+      ${rows.map(([k, v]) => `
+        <div class="row" style="justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);align-items:start">
+          <div style="flex:1"><span class="muted" style="font-size:0.78rem;text-transform:uppercase;letter-spacing:0.08em">${k}</span></div>
+          <div style="flex:1.4;text-align:right">
+            ${Array.isArray(v) ? v.map(x => `<div style="font-size:0.92rem;font-weight:500">${escapeHtml(x)}</div>`).join('') : `<span style="font-weight:500">${escapeHtml(v)}</span>`}
+          </div>
+        </div>`).join('')}
+      <div class="row" style="justify-content:space-between;padding:14px 20px;align-items:center;background:var(--surface-2)">
+        <button class="btn ghost sm" id="obReset" type="button">↻ Start over</button>
+        <span class="muted" style="font-size:0.78rem">Edit anything by going Back ↑</span>
+      </div>
+    </div>`;
+  }, tip: '💡 You can edit anything from Settings later.'},
+
+  { name: 'Finish', q: 'You\'re all set!', ico: 'rocket', render: () => `
+    <div style="text-align:center;padding:40px 20px">
+      <div style="width:96px;height:96px;margin:0 auto 24px;background:var(--success-soft);color:var(--success);border-radius:50%;display:grid;place-items:center;animation:float 4s ease-in-out infinite">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2 style="margin:0;font-size:1.5rem;letter-spacing:-0.025em">Your Financial Identity is being built.</h2>
+      <p class="muted" style="margin:12px auto;max-width:420px">AI is analysing your inputs and computing your DNA. This usually takes a few seconds.</p>
+
+      <div class="progress mt-2" style="height:10px"><div class="fill" id="finishBar" style="width:0"></div></div>
+      <p class="muted" style="font-size:0.85rem;margin-top:14px"><span id="finishPct">0%</span> · Building your DNA</p>
+
+      <button class="btn btn-grad lg mt-3" id="goDash" type="button" style="display:none">
+        Open My Dashboard
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  `, tip: '💡 Hang tight — we\'ll redirect you as soon as your Identity is ready.'},
+];
+
+const ICONS = {
+  user: '<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  briefcase: '<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+  income: '<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',
+  bank: '<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>',
+  upi: '<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="5" rx="3"/><line x1="2" y1="10" x2="22" y2="10"/></svg>',
+  platforms: '<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="4" r="2"/><circle cx="20" cy="20" r="2"/><path d="M9.7 9.7 5.4 5.4M14.3 14.3l4.3 4.3"/></svg>',
+  goal: '<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+  bell: '<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>',
+  check: '<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  rocket: '<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',
+};
+
+/* ===== helpers ===== */
+const setNested = (obj, path, val) => {
+  const keys = path.split('.');
+  let o = obj;
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (!o[keys[i]]) o[keys[i]] = {};
+    o = o[keys[i]];
+  }
+  o[keys[keys.length - 1]] = val;
+};
+const toggleInArray = (arr, val) => {
+  const i = arr.indexOf(val);
+  if (i >= 0) arr.splice(i, 1); else arr.push(val);
+  return arr;
+};
+
+let cur = 0;
+const stepBar = document.getElementById('stepBar');
+STEPS.forEach((_, i) => {
+  const seg = document.createElement('div');
+  seg.className = 'seg';
+  if (i < cur) seg.classList.add('done');
+  if (i === cur) seg.classList.add('cur');
+  seg.innerHTML = '<div class="fill"></div>';
+  stepBar.appendChild(seg);
+});
+
+function render() {
+  const s = STEPS[cur];
+  document.getElementById('stepName').textContent = s.name;
+  document.getElementById('stepCur').textContent = cur + 1;
+  document.getElementById('stepTot').textContent = STEPS.length;
+  document.getElementById('obIco').innerHTML = ICONS[s.ico];
+  document.getElementById('obSteps').innerHTML = `
+    <div class="ob-step active" data-step="${cur}">
+      <div class="row" style="gap:14px;align-items:center;margin-bottom:14px">
+        <span class="badge info"><span class="dot"></span> Step ${cur + 1} of ${STEPS.length}</span>
+        <span class="muted" style="font-size:0.85rem">Save progress automatically</span>
+      </div>
+      <h1 style="font-size:1.75rem;letter-spacing:-0.025em;font-weight:650;margin:0 0 8px">${s.q}</h1>
+      ${s.render()}
+      <div class="insight mt-3" style="background:var(--accent-soft);border-radius:12px;padding:12px 16px;font-size:0.88rem;display:flex;gap:10px;align-items:center;color:var(--text-2)">
+        ${s.tip}
+      </div>
+    </div>
+  `;
+  wireStep();
+  document.getElementById('obPrev').style.visibility = cur === 0 ? 'hidden' : 'visible';
+  const nextBtn = document.getElementById('obNext');
+  nextBtn.textContent = cur === STEPS.length - 1 ? 'Finish' : 'Continue';
+
+  [...stepBar.children].forEach((el, i) => {
+    el.classList.toggle('done', i <= cur);
+    el.classList.toggle('cur', i === cur && i !== STEPS.length - 1);
+  });
+
+  refreshValidation();
+  if (Object.keys(activeErrors).length) applyErrorsToDOM();
+
+  if (cur === STEPS.length - 1) runFinish();
+}
+
+function wireStep() {
+  const root = document.getElementById('obSteps');
+  if (!root) return;
+
+  /* Generic data-bind inputs */
+  root.querySelectorAll('[data-bind]').forEach(el => {
+    el.addEventListener('input', () => {
+      const path = el.dataset.bind;
+      let val = el.value;
+      if (path === 'personal.phone') val = cleanPhone(el.value);
+      const s = STORE.get();
+      setNested(s, path, val);
+      STORE.set(s);
+      refreshValidation();
+      /* Only clear the error for the field that was just edited */
+      if (activeErrors[path]) {
+        delete activeErrors[path];
+        applyErrorsToDOM();
+      }
+    });
+    el.addEventListener('change', () => {
+      refreshValidation();
+      applyErrorsToDOM();
+    });
+  });
+
+  /* Occupation cards */
+  root.querySelectorAll('.occ-card').forEach(card => {
+    const activate = () => {
+      STORE.set({ occupation: card.dataset.occ });
+      root.querySelectorAll('.occ-card').forEach(c => { c.classList.remove('on'); c.setAttribute('aria-pressed', 'false'); });
+      card.classList.add('on');
+      card.setAttribute('aria-pressed', 'true');
+      delete activeErrors.occupation;
+      refreshValidation();
+    };
+    card.addEventListener('click', activate);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
+    });
+  });
+
+  /* Income sources checkboxes */
+  root.querySelectorAll('[data-source]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const s = STORE.get();
+      toggleInArray(s.incomeSources, cb.dataset.source);
+      STORE.set(s);
+      delete activeErrors.sources;
+      refreshValidation();
+    });
+  });
+
+  /* Bank tiles */
+  root.querySelectorAll('[data-bank]').forEach(tile => {
+    const activate = () => {
+      STORE.set({ banks: { ...STORE.get().banks, primary: tile.dataset.bank } });
+      root.querySelectorAll('[data-bank]').forEach(t => { t.classList.remove('on'); t.setAttribute('aria-pressed', 'false'); });
+      tile.classList.add('on');
+      tile.setAttribute('aria-pressed', 'true');
+      delete activeErrors.bank;
+      refreshValidation();
+    };
+    tile.addEventListener('click', activate);
+    tile.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
+    });
+  });
+
+  /* Bank drop zone (simulate upload) */
+  const drop = root.querySelector('#bankDrop');
+  if (drop) {
+    const onDrop = () => {
+      const s = STORE.get();
+      if (!s.banks.uploaded) {
+        const filename = (s.banks.primary || 'bank').toLowerCase().replace(/\s+/g, '_') + '_2026.csv';
+        STORE.set({ banks: { ...s.banks, uploaded: filename + ' · Uploaded ✓' } });
+        drop.classList.add('drag');
+      }
+    };
+    drop.addEventListener('click', onDrop);
+    drop.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onDrop(); }
+    });
+  }
+
+  /* UPI apps */
+  root.querySelectorAll('[data-upi]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const s = STORE.get();
+      toggleInArray(s.upi, cb.dataset.upi);
+      STORE.set(s);
+      delete activeErrors.upi;
+      refreshValidation();
+    });
+  });
+
+  /* Gig platforms */
+  root.querySelectorAll('[data-gig]').forEach(tile => {
+    const cb = tile.querySelector('input[type=checkbox]');
+    const name = tile.dataset.gig;
+    const sync = () => {
+      tile.dataset.on = cb.checked ? 'true' : 'false';
+      tile.setAttribute('aria-pressed', cb.checked ? 'true' : 'false');
+    };
+    sync();
+    cb.addEventListener('change', () => {
+      sync();
+      const s = STORE.get();
+      toggleInArray(s.gigPlatforms, name);
+      STORE.set(s);
+      delete activeErrors.gigs;
+      refreshValidation();
+    });
+  });
+
+  /* Goal chips */
+  root.querySelectorAll('[data-goal]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('on');
+      btn.setAttribute('aria-pressed', btn.classList.contains('on') ? 'true' : 'false');
+      const s = STORE.get();
+      toggleInArray(s.goals, btn.dataset.goal);
+      STORE.set(s);
+      delete activeErrors.goals;
+      refreshValidation();
+    });
+  });
+
+  /* Annual goal input */
+  const annualEl = root.querySelector('#annualGoal');
+  if (annualEl) {
+    annualEl.addEventListener('input', () => {
+      const v = parseInt(annualEl.value, 10) || 0;
+      STORE.set({ annualGoal: v });
+      refreshValidation();
+      if (activeErrors.annualGoal) {
+        delete activeErrors.annualGoal;
+        applyErrorsToDOM();
+      }
+    });
+  }
+
+  /* Permissions */
+  root.querySelectorAll('[data-perm]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const s = STORE.get();
+      s.permissions[cb.dataset.perm] = cb.checked;
+      STORE.set(s);
+    });
+  });
+
+  /* Review "Start over" button */
+  const reset = root.querySelector('#obReset');
+  if (reset) {
+    reset.addEventListener('click', () => {
+      if (confirm('This will clear all your onboarding data. Continue?')) {
+        STORE.reset();
+        cur = 0;
+        activeErrors = {};
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  }
+
+  /* Finish "Open Dashboard" */
+  const goDash = root.querySelector('#goDash');
+  if (goDash) {
+    goDash.addEventListener('click', () => {
+      STORE.set({ onboarded: true });
+      location.href = 'dashboard.html';
+    });
+  }
+}
+
+function runFinish() {
+  const bar = document.getElementById('finishBar');
+  const pct = document.getElementById('finishPct');
+  const btn = document.getElementById('goDash');
+  let p = 0;
+  const t = setInterval(() => {
+    p += 5;
+    bar.style.width = p + '%';
+    pct.textContent = p + '%';
+    if (p >= 100) {
+      clearInterval(t);
+      btn.style.display = 'inline-flex';
+    }
+  }, 90);
+}
+
+function goNext() {
+  /* If the user clicks Next on the Finish step, do nothing — they must use the Open Dashboard button. */
+  if (cur >= STEPS.length - 1) return;
+  activeErrors = validateStep();
+  if (Object.keys(activeErrors).length) {
+    applyErrorsToDOM();
+    /* Focus the first invalid field */
+    const firstKey = Object.keys(activeErrors)[0];
+    const firstEl = document.querySelector(`[data-bind="${firstKey}"]`) || document.getElementById(firstKey);
+    if (firstEl) firstEl.focus();
+    return;
+  }
+  cur++;
+  activeErrors = {};
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function goPrev() { if (cur > 0) { cur--; activeErrors = {}; render(); window.scrollTo({ top: 0, behavior: 'smooth' }); } }
+
+document.getElementById('obNext').onclick = goNext;
+document.getElementById('obPrev').onclick = goPrev;
+
+/* Enter key — advance to next step from anywhere on the page.
+   Ignore Enter when focus is inside the Finish step (it has its own button)
+   or inside a <textarea>. We use keydown to prevent default form submission. */
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  const tag = (e.target && e.target.tagName) || '';
+  if (tag === 'TEXTAREA') return;
+  /* Inside the Finish step, the user uses the "Open Dashboard" button */
+  if (cur === STEPS.length - 1) return;
+  /* If a button other than Continue is focused, let its own handler fire */
+  if (tag === 'BUTTON' && e.target.id !== 'obPrev') return;
+  e.preventDefault();
+  goNext();
+});
+
+/* If user lands on onboarding already completed, jump to Review */
+if (STORE.isOnboarded()) {
+  cur = STEPS.length - 2;
+}
+
+render();
+</script>
+
+<script src="assets/render.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

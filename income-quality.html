@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Income Quality — Financial Identity AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'%3E%3Cpath d='M12 2L4 7l8 5 8-5-8-5z'/%3E%3Cpath d='M4 17l8 5 8-5M4 12l8 5 8-5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E" />
+</head>
+<body data-page="income-quality">
+
+<div id="shell"></div>
+<script>window.FIA_PAGE = { title: 'Income Quality', crumbs: 'Insights / Income', sub: 'How reliable, growing and stable is your income.' };</script>
+<script src="assets/api.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/chrome.js"></script>
+
+<div>
+  <!-- Hero (rendered from STORE) -->
+  <div class="grid g-4 mb-3" data-r="kpis"></div>
+
+  <!-- Consistency chart + heatmap -->
+  <div class="grid mb-3" style="grid-template-columns: 1.4fr 1fr;gap:18px">
+    <div class="card elev">
+      <div class="card-h">
+        <div>
+          <h3 class="card-title">Income Consistency · 12 months</h3>
+          <p class="card-sub">Each bar = monthly inflow · Dots = expected dates</p>
+        </div>
+      </div>
+      <div class="chart" id="incomeBars" style="height:280px"></div>
+      <div class="row mt-2" style="gap:18px;font-size:0.85rem">
+        <div><span class="badge success">●</span> Above average</div>
+        <div><span class="badge warn">●</span> Below average</div>
+        <div class="spacer"></div>
+        <div class="muted">Variance: ±₹14,200 · <b style="color:var(--success)">Stable</b></div>
+      </div>
+    </div>
+
+    <div class="card elev">
+      <div class="card-h">
+        <div>
+          <h3 class="card-title">Payout Heatmap</h3>
+          <p class="card-sub">Day × month — colour intensity = amount</p>
+        </div>
+      </div>
+      <div class="heatmap" id="heatmap"></div>
+      <div class="row mt-2" style="font-size:0.78rem;color:var(--muted);justify-content:flex-end;gap:6px;align-items:center">
+        <span>Less</span>
+        <span style="width:14px;height:14px;background:var(--surface-2);border-radius:3px"></span>
+        <span style="width:14px;height:14px;background:rgba(37,99,235,.10);border-radius:3px"></span>
+        <span style="width:14px;height:14px;background:rgba(37,99,235,.22);border-radius:3px"></span>
+        <span style="width:14px;height:14px;background:rgba(37,99,235,.40);border-radius:3px"></span>
+        <span style="width:14px;height:14px;background:rgba(37,99,235,.62);border-radius:3px"></span>
+        <span style="width:14px;height:14px;background:rgba(37,99,235,.85);border-radius:3px"></span>
+        <span>More</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI explanation -->
+  <div class="grid mb-3" style="grid-template-columns: 1fr 1fr;gap:18px">
+    <div class="card elev">
+      <div class="card-h">
+        <h3 class="card-title">AI Explanation</h3>
+        <span class="badge info" id="aiExplainBadge">Why — /100</span>
+      </div>
+      <div class="col" style="gap:14px" data-r="ai-explain"></div>
+    </div>
+
+    <div class="card elev">
+      <div class="card-h">
+        <h3 class="card-title">Monthly Quality Breakdown</h3>
+        <span class="muted" style="font-size:0.85rem">Last 12 months</span>
+      </div>
+      <div class="col" style="gap:10px" id="monthly"></div>
+    </div>
+  </div>
+
+  <!-- Income timeline -->
+  <div class="card elev">
+    <div class="card-h">
+      <h3 class="card-title">Income Composition Trend</h3>
+      <div class="tabs">
+        <button>3M</button>
+        <button class="on">12M</button>
+        <button>All</button>
+      </div>
+    </div>
+    <div class="chart" id="trendChart" style="height:280px"></div>
+  </div>
+</div>
+
+<script src="assets/store.js"></script>
+<script src="assets/render.js"></script>
+<script src="assets/app.js"></script>
+<script>
+  /* Update the AI explanation badge to reflect the live score */
+  document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+    document.addEventListener('storechange', () => {
+      const d = STORE.computeDerived();
+      const badge = document.getElementById('aiExplainBadge');
+      if (badge) badge.textContent = `Why ${d.incomeQuality}/100`;
+    });
+  }, 0));
+</script>
+</body>
+</html>

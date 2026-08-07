@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Settings — Financial Identity AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'%3E%3Cpath d='M12 2L4 7l8 5 8-5-8-5z'/%3E%3Cpath d='M4 17l8 5 8-5M4 12l8 5 8-5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E" />
+<style>
+  .set-nav {
+    position: sticky; top: 92px;
+    display: flex; flex-direction: column;
+    gap: 4px;
+  }
+  .set-nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: var(--text-2);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .set-nav a:hover { background: var(--surface-2); }
+  .set-nav a.on { background: var(--accent-soft); color: var(--accent); }
+</style>
+</head>
+<body data-page="settings">
+
+<div id="shell"></div>
+<script>window.FIA_PAGE = { title: 'Settings', crumbs: 'Account / Settings', sub: 'Customise your identity.' };</script>
+<script src="assets/api.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/chrome.js"></script>
+
+<div class="grid" style="grid-template-columns: 220px 1fr;gap:24px">
+  <!-- Nav -->
+  <aside class="set-nav">
+    <a class="on" href="#profile">Profile</a>
+    <a href="#security">Security</a>
+    <a href="#theme">Appearance</a>
+    <a href="#notifications">Notifications</a>
+    <a href="#accounts">Connected accounts</a>
+    <a href="#privacy">Privacy &amp; data</a>
+    <a href="#billing">Subscription</a>
+    <a href="#danger" style="color:var(--danger)">Danger zone</a>
+  </aside>
+
+  <div>
+    <!-- Profile -->
+    <section id="profile" class="card elev mb-3">
+      <div class="card-h">
+        <div>
+          <h3 class="card-title">Profile</h3>
+          <p class="card-sub">All fields are required to keep your identity complete.</p>
+        </div>
+      </div>
+      <div class="row" style="gap:24px;align-items:start">
+        <div style="text-align:center">
+          <div id="profileAvatar" style="width:96px;height:96px;border-radius:50%;background:var(--gradient-brand);color:white;display:grid;place-items:center;font-size:2rem;font-weight:700;margin:0 auto 8px;box-shadow:var(--shadow-lg)">AJ</div>
+          <button class="btn ghost sm" type="button" disabled title="Coming soon">Change photo</button>
+        </div>
+        <form id="profileForm" class="grid g-2" style="gap:14px;flex:1" novalidate>
+          <div class="field" data-field="personal.name">
+            <label>Full name <span style="color:var(--danger)">*</span></label>
+            <input class="input" id="pfName" name="name" type="text" required minlength="2" maxlength="60" pattern="^[\p{L}][\p{L}\s.'\-]*[\p{L}.']$" placeholder="e.g. Arjun Joshi" autocomplete="name" />
+          </div>
+          <div class="field" data-field="personal.email">
+            <label>Email <span style="color:var(--danger)">*</span></label>
+            <input class="input" id="pfEmail" name="email" type="email" required placeholder="you@example.com" autocomplete="email" />
+          </div>
+          <div class="field" data-field="personal.phone">
+            <label>Phone <span style="color:var(--danger)">*</span></label>
+            <input class="input" id="pfPhone" name="phone" type="tel" required inputmode="numeric" maxlength="14" placeholder="98765 43210" autocomplete="tel" />
+          </div>
+          <div class="field" data-field="personal.city">
+            <label>City <span style="color:var(--danger)">*</span></label>
+            <select class="select" id="pfCity" name="city" required>
+              <option value="">Select your city</option>
+            </select>
+          </div>
+          <div class="field" data-field="personal.dob">
+            <label>Date of Birth <span style="color:var(--danger)">*</span></label>
+            <input class="input" id="pfDob" name="dob" type="date" required />
+          </div>
+          <div class="field" data-field="pan">
+            <label>PAN</label>
+            <input class="input" id="pfPan" name="pan" type="text" value="ABCPJ1234A" disabled />
+          </div>
+        </form>
+      </div>
+      <div class="row mt-3" style="justify-content:space-between;gap:8px;align-items:center">
+        <span class="muted" id="profileSaveHint" style="font-size:0.82rem">Fill all required fields to save.</span>
+        <div class="row" style="gap:8px">
+          <button class="btn ghost" id="profileCancel" type="button">Cancel</button>
+          <button class="btn primary" id="profileSave" type="button" disabled>Save changes</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Security -->
+    <section id="security" class="card elev mb-3">
+      <div class="card-h"><h3 class="card-title">Security</h3></div>
+      <div class="col" style="gap:18px">
+        <div class="row between" style="padding:14px;border-radius:12px;background:var(--surface-2)">
+          <div>
+            <strong style="display:block">Password</strong>
+            <span class="muted" style="font-size:0.85rem">Last changed 3 months ago</span>
+          </div>
+          <button class="btn secondary sm">Change password</button>
+        </div>
+
+        <div class="row between" style="padding:14px;border-radius:12px;background:var(--surface-2)">
+          <div>
+            <strong style="display:block">Two-factor authentication</strong>
+            <span class="muted" style="font-size:0.85rem">Authenticator app · Verified</span>
+          </div>
+          <label class="switch"><input type="checkbox" checked /><span class="track"></span></label>
+        </div>
+
+        <div class="row between" style="padding:14px;border-radius:12px;background:var(--surface-2)">
+          <div>
+            <strong style="display:block">Biometric login</strong>
+            <span class="muted" style="font-size:0.85rem">Fingerprint / Face ID</span>
+          </div>
+          <label class="switch"><input type="checkbox" checked /><span class="track"></span></label>
+        </div>
+
+        <div class="row between" style="padding:14px;border-radius:12px;background:var(--surface-2)">
+          <div>
+            <strong style="display:block">Active sessions</strong>
+            <span class="muted" style="font-size:0.85rem">3 devices · Last active 2 min ago</span>
+          </div>
+          <button class="btn danger sm">Manage</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Appearance -->
+    <section id="theme" class="card elev mb-3">
+      <div class="card-h"><h3 class="card-title">Appearance</h3></div>
+      <div class="row" style="gap:14px">
+        <button class="card elev" style="padding:18px;text-align:left;flex:1;cursor:pointer;border:2px solid var(--accent)">
+          <div style="background:#F8FAFC;border:1px solid var(--border);border-radius:8px;height:80px;margin-bottom:12px;display:flex;padding:10px;gap:8px">
+            <div style="width:8px;height:100%;background:#2563EB;border-radius:2px"></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+              <div style="height:8px;background:#E2E8F0;border-radius:2px"></div>
+              <div style="height:6px;background:#F1F5F9;border-radius:2px"></div>
+              <div style="height:14px;background:#2563EB;border-radius:2px"></div>
+            </div>
+          </div>
+          <strong style="display:block">Light</strong>
+          <span class="muted" style="font-size:0.82rem">Default</span>
+        </button>
+        <button class="card elev" style="padding:18px;text-align:left;flex:1;cursor:pointer" data-theme-toggle>
+          <div style="background:#0B1120;border:1px solid var(--border);border-radius:8px;height:80px;margin-bottom:12px;display:flex;padding:10px;gap:8px">
+            <div style="width:8px;height:100%;background:#3B82F6;border-radius:2px"></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+              <div style="height:8px;background:#1F2937;border-radius:2px"></div>
+              <div style="height:6px;background:#111827;border-radius:2px"></div>
+              <div style="height:14px;background:#3B82F6;border-radius:2px"></div>
+            </div>
+          </div>
+          <strong style="display:block">Dark</strong>
+          <span class="muted" style="font-size:0.82rem">Easier on eyes</span>
+        </button>
+        <button class="card elev" style="padding:18px;text-align:left;flex:1;cursor:pointer">
+          <div style="background:linear-gradient(135deg,#F8FAFC 50%,#0B1120 50%);border:1px solid var(--border);border-radius:8px;height:80px;margin-bottom:12px"></div>
+          <strong style="display:block">System</strong>
+          <span class="muted" style="font-size:0.82rem">Match device</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Notifications -->
+    <section id="notifications" class="card elev mb-3">
+      <div class="card-h"><h3 class="card-title">Notifications</h3></div>
+      <div class="col" style="gap:10px" id="notifList"></div>
+    </section>
+
+    <!-- Connected accounts -->
+    <section id="accounts" class="card elev mb-3">
+      <div class="card-h"><div><h3 class="card-title">Connected accounts</h3><p class="card-sub">Read-only access · You can disconnect anytime</p></div><button class="btn primary sm">+ Connect new</button></div>
+      <div class="col" style="gap:10px" id="accountsList"></div>
+    </section>
+
+    <!-- Danger zone -->
+    <section id="danger" class="card elev" style="border-color:rgba(239,68,68,0.2)">
+      <div class="card-h"><h3 class="card-title" style="color:var(--danger)">Danger zone</h3></div>
+      <div class="col" style="gap:14px">
+        <div class="row between" style="padding:14px;border-radius:12px;background:var(--danger-soft)">
+          <div><strong style="display:block">Download all data</strong><span class="muted" style="font-size:0.82rem">Get a copy of your identity &amp; raw insights (PDF + JSON).</span></div>
+          <button class="btn secondary sm">Download</button>
+        </div>
+        <div class="row between" style="padding:14px;border-radius:12px;background:var(--danger-soft)">
+          <div><strong style="display:block;color:var(--danger)">Reset demo data</strong><span class="muted" style="font-size:0.82rem">Clear the local identity used by this prototype and start onboarding from scratch.</span></div>
+          <button class="btn danger sm" id="resetDemo">Reset demo data</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script src="assets/store.js"></script>
+<script src="assets/render.js"></script>
+<script src="assets/app.js"></script>
+<script>
+/* Notifications list */
+const NOTIFS = [
+  ['Weekly Financial DNA digest', 'A summary of your score changes.', true],
+  ['AI insight alerts', 'Personalised insights from the engine.', true],
+  ['Loan offer updates', 'New pre-approved offers.', true],
+  ['Payment & risk alerts', 'Real-time warnings.', true],
+  ['Product updates & tips', 'News from the FIA team.', false],
+];
+document.getElementById('notifList').innerHTML = NOTIFS.map(([l, d, on]) => `
+  <div class="row between" style="padding:14px;border-radius:12px;background:var(--surface-2)">
+    <div><strong style="display:block;font-size:0.92rem">${l}</strong><span class="muted" style="font-size:0.82rem">${d}</span></div>
+    <label class="switch"><input type="checkbox" ${on ? 'checked' : ''} /><span class="track"></span></label>
+  </div>
+`).join('');
+
+/* Connected accounts list */
+const ACCOUNTS = [
+  { l: 'HDFC Bank', t: 'Read-only · Last sync 2 min ago', c: 'linear-gradient(135deg,#ED1C24,#A30D11)' },
+  { l: 'PhonePe UPI', t: 'Read-only · Last sync 5 min ago', c: 'linear-gradient(135deg,#6739B7,#5A2DA8)' },
+  { l: 'Zomato', t: 'OAuth · Last sync 1 hr ago', c: 'linear-gradient(135deg,#E23744,#B71B28)' },
+  { l: 'Swiggy', t: 'OAuth · Last sync 1 hr ago', c: 'linear-gradient(135deg,#FC8019,#E66F0A)' },
+];
+document.getElementById('accountsList').innerHTML = ACCOUNTS.map(x => `
+  <div class="row between" style="padding:14px;border-radius:12px;border:1px solid var(--border)">
+    <div class="row" style="gap:12px">
+      <div style="width:40px;height:40px;border-radius:10px;background:${x.c};display:grid;place-items:center;color:white;font-weight:700">${x.l[0]}</div>
+      <div><strong style="display:block;font-size:0.92rem">${x.l}</strong><span class="muted" style="font-size:0.78rem">${x.t}</span></div>
+    </div>
+    <button class="btn ghost sm">Disconnect</button>
+  </div>
+`).join('');
+
+/* Reset demo data — clears STORE and jumps back to landing so onboarding runs again */
+document.getElementById('resetDemo').addEventListener('click', () => {
+  if (!confirm('Reset all your demo data? You\'ll be redirected to start over.')) return;
+  STORE.reset();
+  location.href = 'landing.html';
+});
+
+/* ============================================================
+   PROFILE — bind inputs to STORE, validate, save/cancel
+   ============================================================ */
+(function () {
+  const $ = (s, p = document) => p.querySelector(s);
+  const cleanPhone = (raw) => String(raw || '').replace(/\D/g, '').replace(/^91/, '').replace(/^0/, '');
+  const NAME_RE = /^[\p{L}][\p{L}\s.'-]*[\p{L}.']$/u;
+  const PHONE_RE = /^[6-9]\d{9}$/;
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const todayISO = () => new Date().toISOString().slice(0, 10);
+  const yearsBetween = (iso) => {
+    if (!iso) return null;
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return null;
+    const now = new Date();
+    let age = now.getFullYear() - d.getFullYear();
+    const m = now.getMonth() - d.getMonth();
+    if (m < 0 || (m === 0 && now.getDate() < d.getDate())) age--;
+    return age;
+  };
+
+  const refs = {
+    form: $('#profileForm'),
+    name: $('#pfName'),
+    email: $('#pfEmail'),
+    phone: $('#pfPhone'),
+    city: $('#pfCity'),
+    dob: $('#pfDob'),
+    save: $('#profileSave'),
+    cancel: $('#profileCancel'),
+    avatar: $('#profileAvatar'),
+    hint: $('#profileSaveHint'),
+  };
+
+  /* Populate city select from STORE.catalogs */
+  const cities = (window.STORE && STORE.catalogs && STORE.catalogs.CITIES) || [];
+  cities.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    refs.city.appendChild(opt);
+  });
+
+  /* DOB min/max — age 18..100 */
+  const maxD = new Date(); maxD.setFullYear(maxD.getFullYear() - 18);
+  const minD = new Date(); minD.setFullYear(minD.getFullYear() - 100);
+  refs.dob.max = maxD.toISOString().slice(0, 10);
+  refs.dob.min = minD.toISOString().slice(0, 10);
+
+  /* Hydrate from STORE */
+  function hydrate() {
+    const s = STORE.get();
+    const p = s.personal || {};
+    refs.name.value = p.name || '';
+    refs.email.value = p.email || '';
+    refs.phone.value = p.phone || '';
+    refs.city.value = cities.includes(p.city) ? p.city : (p.city || '');
+    refs.dob.value = p.dob || '';
+
+    /* Avatar initials */
+    const initials = (p.name || '').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+    refs.avatar.textContent = initials || 'AJ';
+
+    clearAllErrors();
+    updateSaveState();
+  }
+
+  /* Validation */
+  function validate() {
+    const errs = {};
+    const name = refs.name.value.trim();
+    if (!name) errs['personal.name'] = 'Full name is required.';
+    else if (name.length < 2) errs['personal.name'] = 'Name is too short.';
+    else if (name.length > 60) errs['personal.name'] = 'Name is too long (max 60 chars).';
+    else if (!NAME_RE.test(name)) errs['personal.name'] = 'Use letters, spaces, periods, hyphens only.';
+
+    const email = refs.email.value.trim();
+    if (!email) errs['personal.email'] = 'Email is required.';
+    else if (!EMAIL_RE.test(email)) errs['personal.email'] = 'Enter a valid email address.';
+
+    const phone = cleanPhone(refs.phone.value);
+    if (!phone) errs['personal.phone'] = 'Mobile number is required.';
+    else if (!PHONE_RE.test(phone)) errs['personal.phone'] = 'Enter a valid 10-digit Indian mobile number.';
+
+    if (!refs.city.value) errs['personal.city'] = 'Please choose your city.';
+    else if (!cities.includes(refs.city.value)) errs['personal.city'] = 'Pick a city from the list.';
+
+    const dob = refs.dob.value;
+    if (!dob) errs['personal.dob'] = 'Date of birth is required.';
+    else {
+      const age = yearsBetween(dob);
+      if (age === null) errs['personal.dob'] = 'Invalid date.';
+      else if (age < 18) errs['personal.dob'] = 'You must be at least 18 years old.';
+      else if (age > 100) errs['personal.dob'] = 'Please enter a valid date of birth.';
+      else if (dob > todayISO()) errs['personal.dob'] = 'Date of birth cannot be in the future.';
+    }
+    return errs;
+  }
+
+  function setFieldError(key, msg) {
+    const field = refs.form.querySelector(`[data-field="${key}"]`);
+    if (!field) return;
+    field.classList.add('has-error');
+    const input = field.querySelector('input, select');
+    if (input) { input.classList.add('err'); input.setAttribute('aria-invalid', 'true'); }
+    let errEl = field.querySelector('.err[data-err]');
+    if (!errEl) {
+      errEl = document.createElement('span');
+      errEl.className = 'err';
+      errEl.setAttribute('data-err', '');
+      field.appendChild(errEl);
+    }
+    errEl.textContent = msg;
+  }
+
+  function clearFieldError(key) {
+    const field = refs.form.querySelector(`[data-field="${key}"]`);
+    if (!field) return;
+    field.classList.remove('has-error');
+    const input = field.querySelector('input, select');
+    if (input) { input.classList.remove('err'); input.removeAttribute('aria-invalid'); }
+    const errEl = field.querySelector('.err[data-err]');
+    if (errEl) errEl.remove();
+  }
+
+  function clearAllErrors() {
+    refs.form.querySelectorAll('.field[data-field]').forEach(f => {
+      f.classList.remove('has-error');
+      const input = f.querySelector('input, select');
+      if (input) { input.classList.remove('err'); input.removeAttribute('aria-invalid'); }
+      const errEl = f.querySelector('.err[data-err]');
+      if (errEl) errEl.remove();
+    });
+  }
+
+  function applyErrors(errs) {
+    Object.keys(errs).forEach(k => setFieldError(k, errs[k]));
+  }
+
+  function focusFirstError(errs) {
+    const firstKey = Object.keys(errs)[0];
+    if (!firstKey) return;
+    const field = refs.form.querySelector(`[data-field="${firstKey}"]`);
+    const input = field && field.querySelector('input, select');
+    if (input) input.focus();
+  }
+
+  function updateSaveState() {
+    const errs = validate();
+    const ok = Object.keys(errs).length === 0;
+    if (ok) {
+      refs.save.removeAttribute('disabled');
+      refs.hint.textContent = 'Ready to save.';
+      refs.hint.style.color = 'var(--success)';
+    } else {
+      refs.save.setAttribute('disabled', 'true');
+      refs.hint.textContent = 'Fill all required fields to save.';
+      refs.hint.style.color = '';
+    }
+  }
+
+  /* Live validation: validate on input, but only show errors AFTER the user
+     has touched a field (or after a save attempt). */
+  const touched = new Set();
+  function liveCheck() {
+    const errs = validate();
+    /* Always clear errors for fields that are now valid */
+    refs.form.querySelectorAll('.field[data-field]').forEach(f => {
+      const key = f.getAttribute('data-field');
+      if (!errs[key]) clearFieldError(key);
+    });
+    /* Show errors only for touched fields */
+    touched.forEach(k => {
+      if (errs[k]) setFieldError(k, errs[k]);
+      else clearFieldError(k);
+    });
+    updateSaveState();
+  }
+
+  function markTouched(e) {
+    const key = e.target.closest('.field[data-field]')?.getAttribute('data-field');
+    if (key) touched.add(key);
+  }
+
+  /* Phone input — keep only digits, strip 0/91 prefix, max 10 */
+  refs.phone.addEventListener('input', (e) => {
+    const cleaned = cleanPhone(e.target.value).slice(0, 10);
+    if (e.target.value !== cleaned) e.target.value = cleaned;
+    markTouched(e);
+    liveCheck();
+  });
+  refs.phone.addEventListener('blur', (e) => { markTouched(e); liveCheck(); });
+
+  ['input', 'blur'].forEach(ev => {
+    [refs.name, refs.email, refs.city, refs.dob].forEach(el => {
+      el.addEventListener(ev, (e) => { markTouched(e); liveCheck(); });
+    });
+  });
+
+  /* Save */
+  refs.save.addEventListener('click', () => {
+    /* Mark all fields as touched so all errors show */
+    refs.form.querySelectorAll('.field[data-field]').forEach(f => {
+      touched.add(f.getAttribute('data-field'));
+    });
+    const errs = validate();
+    clearAllErrors();
+    applyErrors(errs);
+    if (Object.keys(errs).length) {
+      focusFirstError(errs);
+      return;
+    }
+    /* Persist */
+    const s = STORE.get();
+    s.personal.name = refs.name.value.trim();
+    s.personal.email = refs.email.value.trim();
+    s.personal.phone = cleanPhone(refs.phone.value);
+    s.personal.city = refs.city.value;
+    s.personal.dob = refs.dob.value;
+    STORE.set(s);
+    touched.clear();
+    updateSaveState();
+    /* Update avatar initials */
+    const initials = (s.personal.name || '').trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+    refs.avatar.textContent = initials || 'AJ';
+    /* Toast */
+    flashToast('Profile saved');
+  });
+
+  /* Cancel — revert to last STORE values */
+  refs.cancel.addEventListener('click', () => {
+    touched.clear();
+    hydrate();
+    refs.hint.textContent = 'Reverted to last saved values.';
+    refs.hint.style.color = 'var(--muted)';
+    setTimeout(() => updateSaveState(), 1500);
+  });
+
+  /* Simple toast */
+  function flashToast(msg) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--text);color:var(--surface);padding:10px 16px;border-radius:10px;font-weight:600;font-size:0.9rem;box-shadow:var(--shadow-xl);z-index:1000;opacity:0;transition:opacity .25s';
+    document.body.appendChild(t);
+    requestAnimationFrame(() => { t.style.opacity = '1'; });
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 1800);
+  }
+
+  /* Initial hydrate (after chrome.js may have moved form into #content) */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(hydrate, 0));
+  } else {
+    setTimeout(hydrate, 0);
+  }
+  /* Also re-hydrate if STORE changes elsewhere */
+  document.addEventListener('storechange', hydrate);
+})();
+</script>
+</body>
+</html>

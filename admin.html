@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Panel — Financial Identity AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'%3E%3Cpath d='M12 2L4 7l8 5 8-5-8-5z'/%3E%3Cpath d='M4 17l8 5 8-5M4 12l8 5 8-5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E" />
+</head>
+<body>
+
+<div id="shell"></div>
+<script>window.FIA_PAGE = { title: 'Admin Panel', crumbs: 'Internal / Admin', sub: 'System health, fraud signals and model performance.' };</script>
+<script src="assets/api.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/chrome.js"></script>
+
+<div>
+  <!-- System health -->
+  <div class="grid g-4 mb-3">
+    <div class="card elev">
+      <div class="stat">
+        <div class="label">Total Identities</div>
+        <div class="value"><span data-counter="12480">0</span></div>
+        <span class="badge success"><span class="dot"></span> +412 today</span>
+      </div>
+    </div>
+    <div class="card elev">
+      <div class="stat">
+        <div class="label">Active users · 24h</div>
+        <div class="value"><span data-counter="8124">0</span></div>
+        <span class="badge info">65% MAU</span>
+      </div>
+    </div>
+    <div class="card elev">
+      <div class="stat">
+        <div class="label">Model Accuracy</div>
+        <div class="value"><span data-counter="94">0</span>.<span data-counter="6">0</span>%</div>
+        <span class="badge success"><span class="dot"></span> Healthy</span>
+      </div>
+    </div>
+    <div class="card elev">
+      <div class="stat">
+        <div class="label">Fraud signals</div>
+        <div class="value"><span data-counter="14">0</span></div>
+        <span class="badge warn"><span class="dot"></span> 3 critical</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Traffic + Model -->
+  <div class="grid mb-3" style="grid-template-columns:1.5fr 1fr;gap:18px">
+    <div class="card elev">
+      <div class="card-h">
+        <div>
+          <h3 class="card-title">Platform Traffic · 7 days</h3>
+          <p class="card-sub">DAU across web, iOS, Android</p>
+        </div>
+        <div class="tabs">
+          <button class="on">7D</button>
+          <button>30D</button>
+          <button>90D</button>
+        </div>
+      </div>
+      <div class="chart" id="trafficChart" style="height:260px"></div>
+    </div>
+
+    <div class="card elev">
+      <div class="card-h">
+        <h3 class="card-title">Model Performance</h3>
+        <span class="badge success">Live</span>
+      </div>
+      <div class="col" style="gap:14px" id="modelPerf"></div>
+    </div>
+  </div>
+
+  <!-- Recent users + fraud -->
+  <div class="grid mb-3" style="grid-template-columns:1.4fr 1fr;gap:18px">
+    <div class="card elev">
+      <div class="card-h">
+        <h3 class="card-title">Recent signups</h3>
+        <span class="muted" style="font-size:0.85rem">Last 24 hours</span>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>User</th><th>Source</th><th>DNA</th><th>Status</th><th></th></tr></thead>
+        <tbody id="usersTable"></tbody>
+      </table>
+    </div>
+
+    <div class="card elev">
+      <div class="card-h">
+        <h3 class="card-title">Fraud Alerts</h3>
+        <span class="badge danger">3 critical</span>
+      </div>
+      <div class="col" style="gap:10px">
+        <div class="insight" style="background:var(--danger-soft);border-color:rgba(239,68,68,0.2)">
+          <div class="ico" style="background:var(--danger)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div><h4 style="color:var(--danger)">Multiple account · same PAN</h4><p>4 accounts using PAN ABCPJ1234A. Auto-flagged for review.</p></div>
+        </div>
+        <div class="insight" style="background:var(--warning-soft);border-color:rgba(245,158,11,0.2)">
+          <div class="ico" style="background:var(--warning)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div><h4 style="color:var(--warning)">Unusual income spike</h4><p>User IN-DEL-8921: income 5x higher than 30-day median. Possibly data error.</p></div>
+        </div>
+        <div class="insight" style="background:var(--warning-soft);border-color:rgba(245,158,11,0.2)">
+          <div class="ico" style="background:var(--warning)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M16 8 8 16"/></svg>
+          </div>
+          <div><h4 style="color:var(--warning)">Failed KYC attempt · IN-MUM-3342</h4><p>3 failed attempts in last hour from same IP range.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit log + system health -->
+  <div class="grid" style="grid-template-columns:1fr 1fr;gap:18px">
+    <div class="card elev">
+      <div class="card-h">
+        <h3 class="card-title">Audit Log</h3>
+        <span class="muted" style="font-size:0.85rem">Last 1 hour</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item"><div class="when">2 min ago</div><div class="what">Model v2.4 deployed</div></div>
+        <div class="timeline-item"><div class="when">14 min ago</div><div class="what">User data export · user_4982</div></div>
+        <div class="timeline-item"><div class="when">28 min ago</div><div class="what">API rate limit updated</div></div>
+        <div class="timeline-item"><div class="when">42 min ago</div><div class="what">Admin login · arjun@joshi.studio</div></div>
+        <div class="timeline-item muted"><div class="when">1 hr ago</div><div class="what">Backup completed · 3.2 GB</div></div>
+      </div>
+    </div>
+
+    <div class="card elev">
+      <div class="card-h">
+        <h3 class="card-title">System Health</h3>
+        <span class="badge success">All systems normal</span>
+      </div>
+      <div class="col" style="gap:14px" id="systemHealth"></div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+<script>
+/* Recent signups table */
+const USERS = [
+  { n: 'Priya Mehta', e: 'priya@xyz.co', s: 'Google', d: 847, st: 'success', l: 'Verified' },
+  { n: 'Ravi Kumar', e: 'ravi@dev.in', s: 'Referral', d: 762, st: 'success', l: 'Verified' },
+  { n: 'Aarti Singh', e: 'aarti@gig.co', s: 'Direct', d: 698, st: 'info', l: 'In review' },
+  { n: 'Sanjay Patel', e: 'sp@sp.io', s: 'LinkedIn', d: 821, st: 'success', l: 'Verified' },
+  { n: 'Megha Reddy', e: 'm@studio.dev', s: 'Direct', d: 712, st: 'warn', l: 'Suspended' },
+];
+document.getElementById('usersTable').innerHTML = USERS.map(u => `
+  <tr>
+    <td>
+      <div class="row" style="gap:10px">
+        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#3B82F6,#8B5CF6);color:white;display:grid;place-items:center;font-size:0.7rem;font-weight:700">${u.n.split(' ').map(x=>x[0]).join('')}</div>
+        <div><strong style="display:block;font-size:0.88rem">${u.n}</strong><span class="muted" style="font-size:0.78rem">${u.e}</span></div>
+      </div>
+    </td>
+    <td><span class="badge neutral">${u.s}</span></td>
+    <td><strong>${u.d}</strong></td>
+    <td><span class="badge ${u.st}"><span class="dot"></span> ${u.l}</span></td>
+    <td><button class="btn ghost sm">Review</button></td>
+  </tr>
+`).join('');
+
+/* System health bars */
+const HEALTH = [
+  { l: 'API Gateway', s: 99.99, col: 'var(--success)' },
+  { l: 'AI Inference Engine', s: 99.97, col: 'var(--success)' },
+  { l: 'Database (Primary)', s: 99.99, col: 'var(--success)' },
+  { l: 'Bank Connector UPI', s: 99.85, col: 'var(--success)' },
+  { l: 'OCR Service', s: 98.42, col: 'var(--warning)' },
+  { l: 'Email Delivery', s: 99.92, col: 'var(--success)' },
+];
+document.getElementById('systemHealth').innerHTML = HEALTH.map(x => `
+  <div>
+    <div class="row between" style="margin-bottom:6px">
+      <span style="font-weight:500;font-size:0.9rem">${x.l}</span>
+      <span style="font-weight:600;font-size:0.88rem">${x.s.toFixed(2)}%</span>
+    </div>
+    <div class="progress" style="height:5px"><div class="fill" style="width:${x.s}%;background:${x.col}"></div></div>
+  </div>
+`).join('');
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+  document.getElementById('trafficChart').innerHTML = FIA.lineChart(
+    [5820, 6214, 6840, 7820, 8124, 7914, 8124],
+    { color: 'var(--accent)', smooth: true, height: 260, yPrefix: '', xLabels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] }
+  );
+
+  const MODELS = [
+    { n: 'Income Stability v2.4', a: 96.4, col: 'var(--success)' },
+    { n: 'Income Quality v2.3', a: 92.1, col: 'var(--success)' },
+    { n: 'Emergency Score v1.8', a: 89.7, col: 'var(--accent)' },
+    { n: 'Loan Eligibility v3.0', a: 94.6, col: 'var(--success)' },
+    { n: 'Fraud Detection v1.4', a: 87.2, col: 'var(--warning)' },
+  ];
+  document.getElementById('modelPerf').innerHTML = MODELS.map(m => `
+    <div>
+      <div class="row between" style="margin-bottom:6px">
+        <span style="font-weight:500;font-size:0.88rem">${m.n}</span>
+        <span style="font-weight:700;font-size:0.88rem">${m.a}%</span>
+      </div>
+      <div class="progress" style="height:6px"><div class="fill" style="width:${m.a}%;background:${m.col}"></div></div>
+    </div>
+  `).join('');
+}, 0));
+</script>
+</body>
+</html>

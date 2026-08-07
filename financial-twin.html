@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Financial Twin — Financial Identity AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/styles.css" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%232563EB'%3E%3Cpath d='M12 2L4 7l8 5 8-5-8-5z'/%3E%3Cpath d='M4 17l8 5 8-5M4 12l8 5 8-5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E" />
+<style>
+  .twin-hero {
+    background: linear-gradient(135deg, #0B1120 0%, #1e1b4b 100%);
+    border-radius: var(--radius-xl);
+    padding: 36px;
+    color: white;
+    position: relative; overflow: hidden;
+  }
+  .twin-hero .blob {
+    position: absolute; border-radius: 50%; filter: blur(80px);
+    opacity: 0.45;
+  }
+  .twin-hero .b1 { width: 300px; height: 300px; background: #3B82F6; top: -80px; right: -60px; }
+  .twin-hero .b2 { width: 220px; height: 220px; background: #8B5CF6; bottom: -80px; left: 30%; }
+
+  /* Avatar */
+  .twin-avatar {
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent), var(--violet) 60%, transparent 70%);
+    display: grid; place-items: center;
+    position: relative;
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+  .twin-avatar .face {
+    width: 120px; height: 120px;
+    background: rgba(255,255,255,.18);
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,.3);
+    display: grid; place-items: center;
+    color: white;
+  }
+  .twin-avatar .ring {
+    position: absolute; inset: -16px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255,255,255,0.3);
+    animation: rotate 14s linear infinite;
+  }
+
+  /* Sliders */
+  .sim-row {
+    display: grid;
+    grid-template-columns: 240px 1fr 100px;
+    gap: 16px;
+    align-items: center;
+    padding: 16px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: all 0.25s;
+  }
+  .sim-row:hover { border-color: var(--accent); transform: translateX(2px); }
+  .sim-row .lbl {
+    display: flex; gap: 10px; align-items: center;
+    font-weight: 600;
+  }
+  .sim-row .lbl .ico {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: grid; place-items: center;
+  }
+  .sim-row .val {
+    text-align: right;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: -0.02em;
+  }
+
+  .slider-track {
+    position: relative;
+    height: 8px;
+    background: var(--surface-2);
+    border-radius: 999px;
+  }
+  .slider-track .fill {
+    position: absolute; inset: 0;
+    width: 50%;
+    background: var(--gradient-brand);
+    border-radius: 999px;
+    transition: width 0.2s;
+  }
+  .slider-track .knob {
+    position: absolute; top: 50%; left: 50%;
+    width: 18px; height: 18px;
+    background: white;
+    border: 3px solid var(--accent);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 12px rgba(37,99,235,0.4);
+    cursor: grab;
+    transition: left 0.2s, transform 0.1s;
+  }
+  .slider-track .knob:hover { transform: translate(-50%, -50%) scale(1.15); }
+  .slider-track .knob:active { cursor: grabbing; }
+
+  /* prediction results */
+  .pred-card {
+    padding: 18px;
+    border-radius: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .pred-card .lbl { font-size: 0.8rem; color: var(--muted); }
+  .pred-card .val {
+    font-size: 1.5rem; font-weight: 700; letter-spacing: -0.025em;
+    margin-top: 4px;
+    transition: all 0.4s var(--ease);
+  }
+  .pred-card.good { background: linear-gradient(135deg, var(--success-soft), transparent); border-color: rgba(34, 197, 94, 0.2); }
+  .pred-card.warn { background: linear-gradient(135deg, var(--warning-soft), transparent); border-color: rgba(245, 158, 11, 0.2); }
+  .pred-card.bad { background: linear-gradient(135deg, var(--danger-soft), transparent); border-color: rgba(239, 68, 68, 0.2); }
+
+  .scenarios {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 900px) { .scenarios { grid-template-columns: 1fr; } }
+  .scenario {
+    padding: 18px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .scenario:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: var(--shadow-md); }
+  .scenario.on { background: var(--accent-soft); border-color: var(--accent); }
+  .scenario .ico {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: grid; place-items: center;
+    margin-bottom: 10px;
+  }
+  .scenario h4 { margin: 0 0 4px; font-size: 0.95rem; }
+  .scenario p { margin: 0; font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div id="shell"></div>
+<script>
+window.FIA_PAGE = { title: 'Financial Twin', crumbs: 'Identity / Twin', sub: 'Simulate life events on your identity.' };
+</script>
+<script src="assets/api.js"></script>
+<script src="assets/auth.js"></script>
+<script src="assets/chrome.js"></script>
+
+<div>
+  <!-- Hero with avatar -->
+  <div class="twin-hero mb-3">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div style="position:relative;display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center">
+      <div class="twin-avatar">
+        <div class="ring"></div>
+        <div class="face">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+      </div>
+      <div>
+        <span class="badge" style="background:rgba(34,197,94,0.18);color:#86EFAC;border:1px solid rgba(34,197,94,0.3);padding:6px 12px">
+          <span class="dot pulse-soft" style="background:#86EFAC"></span>
+          Twin live · updated 12 sec ago
+        </span>
+        <h1 style="margin:14px 0 8px;font-size:2.1rem;letter-spacing:-0.03em;font-weight:700">Your Financial Twin</h1>
+        <p style="opacity:0.85;max-width:600px;font-size:0.95rem;line-height:1.6">
+          A digital simulation of your financial life, trained on 8 months of behaviour. Drag the sliders below — your future answers recalculate instantly.
+        </p>
+        <div class="row mt-2" style="gap:18px">
+          <div><div style="opacity:0.6;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.14em">Sim runs</div><div style="font-size:1.4rem;font-weight:700"><span data-counter="482">0</span></div></div>
+          <div><div style="opacity:0.6;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.14em">Accuracy</div><div style="font-size:1.4rem;font-weight:700"><span data-counter="94">0</span>%</div></div>
+          <div><div style="opacity:0.6;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.14em">Last run</div><div style="font-size:1.4rem;font-weight:700">Just now</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick scenarios -->
+  <div class="sec-h">
+    <div>
+      <h2>Quick scenarios</h2>
+      <p>Tap a scenario to instantly load preset simulation parameters.</p>
+    </div>
+  </div>
+  <div class="scenarios mb-3">
+    <div class="scenario on" onclick="loadScenario('lost-client')">
+      <div class="ico" style="background:rgba(239,68,68,.12);color:var(--danger)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      </div>
+      <h4>Lose biggest client</h4>
+      <p>Top client cancels — see how your income &amp; DNA react.</p>
+    </div>
+    <div class="scenario" onclick="loadScenario('income-up')">
+      <div class="ico" style="background:var(--success-soft);color:var(--success)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+      </div>
+      <h4>Income boost</h4>
+      <p>Land a ₹50k retainer — see the upside over 12 months.</p>
+    </div>
+    <div class="scenario" onclick="loadScenario('medical')">
+      <div class="ico" style="background:rgba(245,158,11,.12);color:var(--warning)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
+      </div>
+      <h4>Medical emergency</h4>
+      <p>₹2L sudden expense, 1 month off work — can you survive?</p>
+    </div>
+    <div class="scenario" onclick="loadScenario('rent-up')">
+      <div class="ico" style="background:rgba(139,92,246,.12);color:var(--violet)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <h4>Rent increase</h4>
+      <p>Landlord raises rent 20% — what's left for savings?</p>
+    </div>
+    <div class="scenario" onclick="loadScenario('new-loan')">
+      <div class="ico" style="background:var(--accent-soft);color:var(--accent)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/></svg>
+      </div>
+      <h4>Take a new loan</h4>
+      <p>Add ₹3L @12% for 24 months — debt-to-income impact.</p>
+    </div>
+    <div class="scenario" onclick="loadScenario('save-more')">
+      <div class="ico" style="background:rgba(20,184,166,.12);color:var(--teal)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5h-2V3H7v2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zM12 17V9"/></svg>
+      </div>
+      <h4>Save aggressively</h4>
+      <p>Bump savings rate to 30% — project wealth in 5 years.</p>
+    </div>
+  </div>
+
+  <!-- Sliders + Predictions -->
+  <div class="grid" style="grid-template-columns: 1.2fr 1fr;gap:18px">
+    <div class="card elev">
+      <div class="card-h">
+        <div>
+          <h3 class="card-title">Tune the simulation</h3>
+          <p class="card-sub">Drag any slider — predictions update in real-time.</p>
+        </div>
+        <button class="btn ghost sm" onclick="resetSim()">↻ Reset</button>
+      </div>
+
+      <div class="col" style="gap:12px">
+        <!-- Income Change -->
+        <div class="sim-row">
+          <div class="lbl">
+            <div class="ico" style="background:var(--success-soft);color:var(--success)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            Income Change
+          </div>
+          <div data-slider>
+            <div class="slider-track">
+              <div class="fill" style="width:50%;background:var(--gradient-brand)"></div>
+              <div class="knob" style="left:50%"></div>
+            </div>
+            <input type="range" min="-100" max="100" value="0" style="display:none" data-prefix="pc" data-suffix="%" />
+          </div>
+          <div class="val out">0%</div>
+        </div>
+
+        <!-- Expenses -->
+        <div class="sim-row">
+          <div class="lbl">
+            <div class="ico" style="background:rgba(245,158,11,.12);color:var(--warning)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            Monthly Expenses
+          </div>
+          <div data-slider>
+            <div class="slider-track">
+              <div class="fill" style="width:50%"></div>
+              <div class="knob" style="left:50%"></div>
+            </div>
+            <input type="range" min="-50" max="100" value="0" style="display:none" data-prefix="pc" data-suffix="%" />
+          </div>
+          <div class="val out">0%</div>
+        </div>
+
+        <!-- EMI Addition -->
+        <div class="sim-row">
+          <div class="lbl">
+            <div class="ico" style="background:rgba(239,68,68,.12);color:var(--danger)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/></svg>
+            </div>
+            New EMI
+          </div>
+          <div data-slider>
+            <div class="slider-track">
+              <div class="fill" style="width:0%;background:var(--gradient-brand)"></div>
+              <div class="knob" style="left:0%"></div>
+            </div>
+            <input type="range" min="0" max="50000" value="0" step="1000" style="display:none" data-prefix="money" />
+          </div>
+          <div class="val out">₹0</div>
+        </div>
+
+        <!-- Savings Rate -->
+        <div class="sim-row">
+          <div class="lbl">
+            <div class="ico" style="background:rgba(20,184,166,.12);color:var(--teal)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5h-2V3H7v2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg>
+            </div>
+            Savings Rate
+          </div>
+          <div data-slider>
+            <div class="slider-track">
+              <div class="fill" style="width:36%;background:var(--gradient-brand)"></div>
+              <div class="knob" style="left:36%"></div>
+            </div>
+            <input type="range" min="0" max="80" value="18" style="display:none" data-suffix="%" />
+          </div>
+          <div class="val out">18%</div>
+        </div>
+
+        <!-- Months Out of Work -->
+        <div class="sim-row">
+          <div class="lbl">
+            <div class="ico" style="background:rgba(139,92,246,.12);color:var(--violet)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            Months Without Income
+          </div>
+          <div data-slider>
+            <div class="slider-track">
+              <div class="fill" style="width:0%"></div>
+              <div class="knob" style="left:0%"></div>
+            </div>
+            <input type="range" min="0" max="12" value="0" style="display:none" data-suffix=" months" />
+          </div>
+          <div class="val out">0 months</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live predictions -->
+    <div class="col" style="gap:14px">
+      <div class="card elev">
+        <div class="card-h">
+          <div>
+            <h3 class="card-title">Live Predictions</h3>
+            <p class="card-sub">What your financial life looks like</p>
+          </div>
+          <span class="badge info"><span class="dot pulse-soft"></span> Live</span>
+        </div>
+
+        <div class="col" style="gap:10px" id="predictions">
+          <div class="pred-card good" data-p="savings">
+            <div class="lbl">Predicted monthly savings</div>
+            <div class="val" id="pSavings">₹33,156</div>
+            <div class="muted" style="font-size:0.78rem" id="pSavingsDelta">+₹8,400 vs baseline</div>
+          </div>
+          <div class="pred-card good" data-p="dna">
+            <div class="lbl">DNA score</div>
+            <div class="val" id="pDNA">847 / 1000</div>
+            <div class="muted" style="font-size:0.78rem">Elite tier</div>
+          </div>
+          <div class="pred-card warn" data-p="cashflow">
+            <div class="lbl">12-month cash flow</div>
+            <div class="val" id="pCashflow">+ ₹3.98 L</div>
+            <div class="muted" style="font-size:0.78rem">After expenses &amp; savings</div>
+          </div>
+          <div class="pred-card good" data-p="risk">
+            <div class="lbl">Bankruptcy risk</div>
+            <div class="val" id="pRisk">Low · 4.2%</div>
+            <div class="muted" style="font-size:0.78rem">Based on current trajectory</div>
+          </div>
+          <div class="pred-card good" data-p="loan">
+            <div class="lbl">Loan eligibility</div>
+            <div class="val" id="pLoan">₹6.2 L @ 10.5%</div>
+            <div class="muted" style="font-size:0.78rem">From 8 partner lenders</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card elev" style="background:linear-gradient(135deg,var(--accent-soft),transparent)">
+        <div class="row" style="gap:14px">
+          <div style="width:42px;height:42px;background:var(--gradient-brand);color:white;border-radius:12px;display:grid;place-items:center;flex-shrink:0">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/></svg>
+          </div>
+          <div>
+            <strong style="display:block;font-size:0.95rem">AI Verdict</strong>
+            <p style="margin:4px 0 0;color:var(--text-2);font-size:0.85rem;line-height:1.55">
+              With these settings, you'd reach <b>₹1.2Cr net worth</b> in 8 years. Boost savings to 30% and that drops to 6 years.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Twin chart -->
+  <div class="card elev mt-3">
+    <div class="card-h">
+      <div>
+        <h3 class="card-title">Projected Net Worth · Next 5 years</h3>
+        <p class="card-sub">Based on the scenario above. Real-time recalculation.</p>
+      </div>
+      <div class="tabs">
+        <button>1Y</button>
+        <button class="on">5Y</button>
+        <button>10Y</button>
+      </div>
+    </div>
+    <div class="chart" id="twinChart" style="height:320px"></div>
+    <div class="row mt-2" style="gap:24px;flex-wrap:wrap">
+      <div><span class="badge info">●</span> <span class="muted" style="font-size:0.85rem">Current scenario</span></div>
+      <div><span class="badge warn">●</span> <span class="muted" style="font-size:0.85rem">No changes</span></div>
+      <div><span class="badge success">●</span> <span class="muted" style="font-size:0.85rem">Save 30%</span></div>
+      <div class="spacer"></div>
+      <div><span class="muted" style="font-size:0.85rem">5-year projection: <b style="color:var(--accent)">₹1.2 Cr</b></span></div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => setTimeout(() => {
+  /* Build slider events since APP sliders are basic */
+  document.querySelectorAll('[data-slider]').forEach(s => {
+    const fill = s.querySelector('.fill');
+    const knob = s.querySelector('.knob');
+    const inp = s.querySelector('input');
+    const out = s.parentElement.querySelector('.out');
+    const update = (val) => {
+      const pct = (val - inp.min) / (inp.max - inp.min) * 100;
+      fill.style.width = pct + '%';
+      knob.style.left = pct + '%';
+      if (out) {
+        const prefix = inp.dataset.prefix;
+        const suffix = inp.dataset.suffix || '';
+        out.textContent = prefix === 'money' ? '₹' + Number(val).toLocaleString() : val + suffix;
+      }
+      predict();
+    };
+    /* mouse drag */
+    let dragging = false;
+    const move = (e) => {
+      if (!dragging) return;
+      const rect = s.getBoundingClientRect();
+      const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      const pct = Math.max(0, Math.min(1, x / rect.width));
+      const raw = inp.min + pct * (inp.max - inp.min);
+      const step = inp.step || 1;
+      const v = Math.round(raw / step) * step;
+      inp.value = v;
+      update(v);
+    };
+    s.addEventListener('mousedown', e => { dragging = true; move(e); });
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', () => dragging = false);
+    s.addEventListener('touchstart', e => { dragging = true; move(e); });
+    window.addEventListener('touchmove', move);
+    window.addEventListener('touchend', () => dragging = false);
+    update(inp.value);
+  });
+
+  /* scenario presets */
+  window.loadScenario = (id) => {
+    document.querySelectorAll('.scenario').forEach((s, i) => {
+      s.classList.toggle('on', [
+        'lost-client','income-up','medical','rent-up','new-loan','save-more'
+      ][i] === id);
+    });
+    const sets = {
+      'lost-client':  { 0: -73, 1:  0,  2:    0, 3: 18, 4:  3 },
+      'income-up':    { 0:  35, 1:  0,  2:    0, 3: 30, 4:  0 },
+      'medical':      { 0:  -8, 1: 30,  2:    0, 3:  5, 4:  2 },
+      'rent-up':      { 0:   0, 1: 20,  2:    0, 3: 10, 4:  0 },
+      'new-loan':     { 0:   0, 1: 10,  2: 8000, 3:  5, 4:  0 },
+      'save-more':    { 0:   0, 1: -5,  2:    0, 3: 30, 4:  0 },
+    };
+    const inputs = document.querySelectorAll('[data-slider] input');
+    const set = sets[id];
+    Object.entries(set).forEach(([i, v]) => {
+      inputs[i].value = v;
+      const evt = new Event('input');
+      inputs[i].dispatchEvent(evt);
+    });
+    inputs.forEach(inp => inp.dispatchEvent(new Event('input')));
+  };
+
+  window.resetSim = () => {
+    document.querySelectorAll('.scenario').forEach(s => s.classList.remove('on'));
+    const defaults = [0, 0, 0, 18, 0];
+    const inputs = document.querySelectorAll('[data-slider] input');
+    inputs.forEach((inp, i) => {
+      inp.value = defaults[i];
+      inp.dispatchEvent(new Event('input'));
+    });
+  };
+
+  /* simple "AI" prediction that reacts to inputs */
+  function predict() {
+    const inputs = [...document.querySelectorAll('[data-slider] input')].map(i => +i.value);
+    const [inc, exp, emi, sav, gap] = inputs;
+    const baseInc = 184200, baseExp = 142000, baseSav = 18;
+    const monthly = (baseInc * (1 + inc/100)) - (baseExp * (1 + exp/100)) - emi;
+    const newSav = monthly > 0 ? Math.round(monthly * (sav/100)) : 0;
+    const yearNet = newSav * 12;
+    const cashFlow = monthly * 12;
+    const risk = Math.max(2, Math.min(85, 24 - (sav - 10) + (gap * 6) + (emi/1500)));
+    const dna = Math.round(750 + (sav * 2.4) + (inc * 0.4) - (emi/1200) - (gap * 5));
+    const loan = Math.round(Math.max(0, monthly * 36 * (1 - risk/100) / 1000)) * 1000;
+
+    document.getElementById('pSavings').textContent = '₹' + newSav.toLocaleString();
+    /* Baseline savings = baseInc - baseExp, with sav% applied. Recompute delta dynamically. */
+    const baseMonthly = baseInc - baseExp;
+    const baselineSav = baseMonthly > 0 ? Math.round(baseMonthly * (baseSav/100)) : 0;
+    const delta = newSav - baselineSav;
+    const deltaEl = document.getElementById('pSavingsDelta');
+    if (deltaEl) {
+      const sign = delta >= 0 ? '+' : '-';
+      deltaEl.textContent = `${sign}₹${Math.abs(delta).toLocaleString()} vs baseline`;
+      deltaEl.style.color = delta >= 0 ? 'var(--success)' : 'var(--danger)';
+    }
+    document.getElementById('pDNA').textContent = `${Math.max(200, Math.min(1000, dna))} / 1000`;
+    document.getElementById('pCashflow').textContent = (cashFlow > 0 ? '+ ' : '- ') + '₹' + Math.abs(cashFlow/100000).toFixed(2) + ' L';
+    document.getElementById('pRisk').textContent = (risk > 50 ? 'High' : risk > 25 ? 'Moderate' : 'Low') + ' · ' + risk.toFixed(1) + '%';
+    document.getElementById('pLoan').textContent = '₹' + (loan/100000).toFixed(1) + ' L @ 10.5%';
+
+    /* colourise */
+    const cls = (card, c) => {
+      card.classList.remove('good','warn','bad');
+      card.classList.add(c);
+    };
+    cls(document.querySelector('[data-p="savings"]'), newSav > 0 ? 'good' : 'warn');
+    cls(document.querySelector('[data-p="dna"]'), dna > 800 ? 'good' : dna > 650 ? 'warn' : 'bad');
+    cls(document.querySelector('[data-p="cashflow"]'), cashFlow > 0 ? 'good' : 'bad');
+    cls(document.querySelector('[data-p="risk"]'), risk < 25 ? 'good' : risk < 50 ? 'warn' : 'bad');
+    cls(document.querySelector('[data-p="loan"]'), loan > 400000 ? 'good' : 'warn');
+
+    /* update chart */
+    drawChart();
+  }
+
+  /* chart that updates with prediction */
+  let chartInit = false;
+  function drawChart() {
+    const baseSav = 33;
+    const baseInc = [22, 26, 32, 38, 46, 55, 68, 82, 96, 112, 128, 144, 162, 182, 200, 218, 238, 258, 278, 298, 320, 342, 366, 392];
+    const scaled = baseInc.map(v => Math.round(v * (1 + (parseFloat(document.querySelectorAll('[data-slider] input')[3].value) - 18) / 25)));
+    const noChange = baseInc.map(v => Math.round(v * 0.85));
+    document.getElementById('twinChart').innerHTML = FIA.lineChart(scaled, {
+      color: 'var(--accent)', smooth: true, height: 320, xPrefix: '', yPrefix: '₹',
+      xLabels: ['2026','2027','2028','2029','2030','2031']
+    });
+  }
+  drawChart();
+}, 0));
+</script>
+</body>
+</html>
