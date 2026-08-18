@@ -8,7 +8,7 @@ Picks the engine based on ``settings.scoring_engine``:
 from __future__ import annotations
 
 from app.config import settings
-from app.services.scoring.ai_engine import AIScoringEngine
+from app.services.scoring.ai_engine import MLScoringEngine
 from app.services.scoring.engine import RuleBasedScoringEngine, ScoringEngine
 from app.services.scoring.rules import DerivedMetrics, derive
 
@@ -17,7 +17,7 @@ _engine: ScoringEngine | None = None
 
 def _build_default() -> ScoringEngine:
     if settings.scoring_engine == "ai":
-        return AIScoringEngine()
+        return MLScoringEngine()
     return RuleBasedScoringEngine()
 
 
@@ -42,7 +42,8 @@ __all__ = [
     "set_scoring_engine",
     "ScoringEngine",
     "RuleBasedScoringEngine",
-    "AIScoringEngine",
+    "MLScoringEngine",
+
     "DerivedMetrics",
     "derive",
 ]

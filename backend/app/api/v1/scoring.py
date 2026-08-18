@@ -24,6 +24,8 @@ from app.schemas import (
     TimelineResponse,
     TwinSimulateRequest,
     TwinSimulateResponse,
+    AnomalyScoreRequest,
+    AnomalyScoreResponse,
 )
 from app.services.analytics import (
     career_stability,
@@ -262,3 +264,18 @@ async def timeline(
 ) -> TimelineResponse:
     events = await financial_timeline(db, identity, limit=limit)
     return TimelineResponse(events=events)
+
+
+@router.post("/anomaly-score", response_model=AnomalyScoreResponse)
+async def compute_anomaly_score(
+    body: AnomalyScoreRequest,
+    identity: Identity = Depends(get_current_identity),
+) -> AnomalyScoreResponse:
+    from app.services.scoring.ai_engine import analyze_transactions
+    
+    # Convert Pydantic models to dicts for the analyzer
+    transactions = [t.model_dump() for t in body.transactions]
+    
+    result = analyze_transactions(transactions)
+    return AnomalyScoreResponse(**result)
+

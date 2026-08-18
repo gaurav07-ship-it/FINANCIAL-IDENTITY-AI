@@ -72,3 +72,20 @@ class TwinSimulateResponse(BaseModel):
     emiImpact: float
     savingsRate: float
     months: list[dict]  # [{ "month": 1, "income": int, "savings": int, "net": int }]
+
+
+class TransactionAnomaly(BaseModel):
+    amount: float
+    direction: Literal["credit", "debit"]
+    category: str
+
+
+class AnomalyScoreRequest(BaseModel):
+    transactions: list[TransactionAnomaly]
+
+
+class AnomalyScoreResponse(BaseModel):
+    anomalyScore: int = Field(alias="anomaly_score")
+    isAnomalous: bool = Field(alias="is_anomalous")
+    anomalousTransactionCount: int = Field(alias="anomalous_transaction_count")
+    riskLevel: str = Field(alias="risk_level")

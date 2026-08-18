@@ -35,6 +35,8 @@ from app.schemas.scoring import (
     IncomeQualityResponse,
     TwinSimulateRequest,
     TwinSimulateResponse,
+    AnomalyScoreRequest,
+    AnomalyScoreResponse,
 )
 
 __all__ = [
@@ -58,6 +60,9 @@ __all__ = [
     "IncomeQualityResponse",
     "TwinSimulateRequest",
     "TwinSimulateResponse",
+    "AnomalyScoreRequest",
+    "AnomalyScoreResponse",
+
     # analytics
     "CareerStabilityResponse",
     "DnaReasonCode",
