@@ -152,6 +152,36 @@ pytest -q
 
 The backend ships as a Vercel serverless function (`backend/api/index.py`, see `backend/vercel.json`), with a Vercel Cron job hitting `/api/v1/cron/recompute-all` nightly to refresh every user's score. In production, point `DATABASE_URL` at a managed Postgres instance, enable `NEO4J_ENABLED` against a Neo4j Aura instance, set `COOKIE_SECURE=true` and a real `JWT_SECRET`, and swap `AGGREGATOR_PROVIDER` to a live provider (`setu` / `finbox`) with credentials.
 
+## Data Flow
+
+```mermaid
+flowchart TD
+    RawData([Raw Consented Data]) --> IE[Income Engine]
+    RawData --> FD[Fraud Detection]
+    
+    IE --> ID[Hidden Income Detection]
+    IE --> N[Normalize Irregular Streams]
+    
+    N --> FDNA{Financial DNA}
+    ID --> FDNA
+    
+    FDNA --> DC[Dynamic Credit Score]
+    FDNA --> IQ[Income Quality & Stability]
+    FDNA --> CR[Platform Risk & Client Dependency]
+    
+    DC --> FT[Financial Twin]
+    
+    FT --> ISS[Income Shock Simulator]
+    FT --> OE[Opportunity Engine]
+    FT --> LE[Loan Eligibility Assessment]
+    
+    LE --> FP([Financial Passport])
+    OE --> FP
+    
+    style RawData fill:#f9f,stroke:#333,stroke-width:2px
+    style FP fill:#bbf,stroke:#333,stroke-width:2px
+```
+
 ## Team
 
 Built by **Team VMax** — Gaurav Jain, Aditya Gavane, Nishad Kulkarni, Amulya Dongre.
