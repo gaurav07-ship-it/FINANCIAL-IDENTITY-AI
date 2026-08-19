@@ -182,6 +182,34 @@ flowchart TD
     style FP fill:#bbf,stroke:#333,stroke-width:2px
 ```
 
+### Interaction Sequence
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant F as Frontend (HTML/JS)
+    participant B as Backend API (FastAPI)
+    participant AA as Aggregator (Setu/Finbox)
+    participant ML as AI / Scoring Engine
+    participant L as Lending Partners
+
+    U->>F: Sign up & Onboard
+    F->>B: POST /api/v1/auth/register
+    U->>F: Provide Data Consent
+    F->>B: POST /api/v1/aggregators/consent
+    B->>AA: Initiate Account Aggregator
+    AA-->>B: Webhook: Financial Data Synced
+    B->>ML: Send Data for Scoring
+    ML-->>B: Generate Financial DNA & Twin
+    B-->>F: Return Income Quality & Metrics
+    F->>U: Display User Dashboard
+    B->>L: Real-time Eligibility Assessment
+    L-->>B: Return Pre-approved Offers
+    B-->>F: Match Offers to User
+    F->>U: Display Opportunity Recommendations
+```
+
 ## Team
 
 Built by **Team VMax** — Gaurav Jain, Aditya Gavane, Nishad Kulkarni, Amulya Dongre.
